@@ -1,0 +1,12 @@
+services:
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: wp
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: superSecretPassword!123
