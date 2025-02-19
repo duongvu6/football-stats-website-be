@@ -23,5 +23,8 @@ public class Player {
     @CollectionTable(name = "player_citizenship", joinColumns = @JoinColumn(name = "player_id"))
     @Column(name = "citizenship")
     private Set<String> citizenships;
-
+    @ElementCollection
+    @CollectionTable(name = "player_position", joinColumns = @JoinColumn(name = "player_id"))
+    @Column(name = "position")
+    private Set<String> postions;
 }
