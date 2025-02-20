@@ -18,5 +18,9 @@ public class Club {
     private String stadiumName;
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private Set<CoachClub> coachClubs;
+    @OneToMany(mappedBy = "club")
+    private Set<ClubSeasonTable> clubSeasonTables;
+    @OneToMany(mappedBy = "club")
+    private Set<TransferHistory> transferHistories;
 
 }

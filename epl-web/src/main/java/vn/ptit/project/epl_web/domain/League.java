@@ -1,10 +1,9 @@
 package vn.ptit.project.epl_web.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Set;
 
 @Entity
 @Data
@@ -13,4 +12,7 @@ public class League {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    @OneToMany(mappedBy = "league",cascade = CascadeType.ALL)
+    private Set<LeagueSeason> leageSeasons;
+
 }

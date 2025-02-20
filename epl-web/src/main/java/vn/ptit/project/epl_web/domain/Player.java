@@ -27,4 +27,6 @@ public class Player {
     @CollectionTable(name = "player_position", joinColumns = @JoinColumn(name = "player_id"))
     @Column(name = "position")
     private Set<String> postions;
+    @OneToMany(mappedBy = "player")
+    private Set<TransferHistory> transferHistories;
 }
