@@ -10,5 +10,5 @@ public class MatchAction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
 }

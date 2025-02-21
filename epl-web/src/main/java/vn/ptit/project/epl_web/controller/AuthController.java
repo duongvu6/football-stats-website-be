@@ -17,19 +17,16 @@ import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    private UserService userService;
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
-
-
     @PostMapping("/register")
     public ResponseEntity<ResponseCreateUserDTO> register(@Valid @RequestBody RequestRegisterUserDTO requestRegisterUserDTO) throws InvalidRequestException {
-        // System.out.println(requestRegisterUserDTO);
         if (this.userService.isEmailExists(requestRegisterUserDTO.getEmail())) {
             throw new InvalidRequestException("Email " + requestRegisterUserDTO.getEmail() + " is already exists. Please choose another email");
         }
@@ -37,7 +34,5 @@ public class AuthController {
         requestRegisterUserDTO.setPassword(hashedPassword);
         User createdUser = this.userService.handleSaveUser(this.userService.convertRequestRegisterUserDTOtoUser(requestRegisterUserDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertUserToResponseCreateUserDTO(createdUser));
-
     }
-
 }

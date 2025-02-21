@@ -1,6 +1,5 @@
 package vn.ptit.project.epl_web.dto.request.auth;
 
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
