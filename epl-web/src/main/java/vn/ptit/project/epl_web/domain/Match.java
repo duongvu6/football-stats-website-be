@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name="matches")
 public class Match {
     @ManyToOne
     @JoinColumn(name="host_id")
