@@ -10,7 +10,7 @@ public class ResponseCreateUserDTO {
     private String name;
     private String email;
 
-    public Long getId() {
+public Long getId() {
         return id;
     }
 
@@ -32,5 +32,13 @@ public class ResponseCreateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    @Override
+    public String toString() {
+        return "ResponseCreateUserDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

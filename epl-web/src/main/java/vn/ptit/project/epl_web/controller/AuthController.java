@@ -32,7 +32,7 @@ public class AuthController {
         }
         String hashedPassword = this.passwordEncoder.encode(requestRegisterUserDTO.getPassword());
         requestRegisterUserDTO.setPassword(hashedPassword);
-        User createdUser = this.userService.handleSaveUser(this.userService.convertRequestRegisterUserDTOtoUser(requestRegisterUserDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertUserToResponseCreateUserDTO(createdUser));
+        User createdUser = this.userService.handleSaveUser(requestRegisterUserDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.toResponseCreateUserDTO(createdUser));
     }
 }
