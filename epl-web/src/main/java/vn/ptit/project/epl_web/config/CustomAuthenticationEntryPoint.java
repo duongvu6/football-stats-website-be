@@ -39,7 +39,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         // res.setError(authException.getCause().getMessage());
 
-        res.setMessage("Token không hợp lệ (hết hạn, không đúng định dạng, hoặc không truyền JWT ở header)...");
+        res.setMessage("Token is not valid(expired, not in correct format or not pass Jwt in header)...");
 
         mapper.writeValue(response.getWriter(), res);
 

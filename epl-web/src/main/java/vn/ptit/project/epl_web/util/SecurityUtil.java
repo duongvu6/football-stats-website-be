@@ -43,7 +43,7 @@ public class SecurityUtil {
         userInsideToken.setEmail(resLoginDTO.getUser().getEmail());
         userInsideToken.setId(resLoginDTO.getUser().getId());
         userInsideToken.setName(resLoginDTO.getUser().getName());
-        // userInsideToken.setRole(resLoginDTO.getUser().getRole());
+         userInsideToken.setRole(resLoginDTO.getUser().getRole());
 
         Instant nowTime = Instant.now();
         Instant validity = nowTime.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
