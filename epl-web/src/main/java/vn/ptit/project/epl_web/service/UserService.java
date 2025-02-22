@@ -1,5 +1,6 @@
 package vn.ptit.project.epl_web.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.User;
 import vn.ptit.project.epl_web.dto.request.auth.RequestRegisterUserDTO;
@@ -10,10 +11,10 @@ import vn.ptit.project.epl_web.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    private final ModelMapper mapper;
+    public UserService(UserRepository userRepository, ModelMapper mapper) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
+        this.mapper = mapper;
     }
 
     public boolean isEmailExists(String email) {
@@ -22,13 +23,12 @@ public class UserService {
 
 
     public User handleSaveUser(RequestRegisterUserDTO userDTO) {
-        return this.userRepository.save(this.userMapper.toUser(userDTO));
+        return this.userRepository.save(this.mapper.map(userDTO,User.class));
     }
     public ResponseCreateUserDTO toResponseCreateUserDTO(User user) {
-        ResponseCreateUserDTO userDTO = new ResponseCreateUserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        return userDTO;
+        return this.mapper.map(user, ResponseCreateUserDTO.class);
+    }
+    public User getUserByUsername(String email) {
+        return this.userRepository.findByEmail(email).get();
     }
 }
