@@ -1,5 +1,6 @@
 package vn.ptit.project.epl_web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Auth Controller", description = "APIs for handling authentication")
 public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;

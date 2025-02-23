@@ -10,9 +10,6 @@ public class EplWebApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EplWebApplication.class, args);
-		League l=new League(1,"l1");
-		l.setId(2);
-		System.out.println(l.getId());
 	}
 
 }
