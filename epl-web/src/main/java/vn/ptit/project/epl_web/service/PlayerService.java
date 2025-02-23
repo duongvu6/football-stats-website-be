@@ -6,7 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.Player;
+import vn.ptit.project.epl_web.dto.request.player.RequestCreatePlayerDTO;
+import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponseCreatePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponseUpdatePlayerDTO;
 import vn.ptit.project.epl_web.repository.PlayerRepository;
 
 import java.util.ArrayList;
@@ -24,13 +28,26 @@ public class PlayerService {
     }
 
     public Player handleCreatePlayer(Player player) {
-        // TODO Auto-generated method stub
-
         return this.playerRepository.save(player);
     }
 
-
-
+    public Player requestPlayerDTOtoPlayer(RequestCreatePlayerDTO playerDTO) {
+        return this.mapper.map(playerDTO, Player.class);
+    }
+    public ResponseCreatePlayerDTO playerToResponseCreatePlayerDTO(Player player) {
+        return this.mapper.map(player, ResponseCreatePlayerDTO.class);
+    }
+    public ResponseUpdatePlayerDTO playerToResponseUpdatePlayerDTO(Player player) {
+        return this.mapper.map(player, ResponseUpdatePlayerDTO.class);
+    }
+    public Player handleUpdatePlayer(Player player, RequestUpdatePlayerDTO playerDTO) {
+        this.mapper.map(playerDTO, player);
+        //handle transfer history
+        if (playerDTO.getTransferHistories() != null) {
+            //TODO: implement transfer history created and query to db
+        }
+        return this.playerRepository.save(player);
+    }
     public Optional<Player> getPlayerById(Long id) {
         return this.playerRepository.findById(id);
     }
@@ -49,18 +66,17 @@ public class PlayerService {
         result.setResult(list);
         return result;
     }
-    public void handleDeletePlayer(Long id) {
-        Optional<Player> player = this.playerRepository.findById(id);
-        if (player.isPresent()) {
-            Player deletedPlayer = player.get();
-            //delete all club related
-            //TO-DO
-
-
-        }
-
-
-        this.playerRepository.deleteById(id);
-    }
+//    public void handleDeletePlayer(Long id) {
+//        Optional<Player> player = this.playerRepository.findById(id);
+//        if (player.isPresent()) {
+//            Player deletedPlayer = player.get();
+//            //TODO delete all club related
+//
+//
+//        }
+//
+//
+//        this.playerRepository.deleteById(id);
+//    }
 
 }

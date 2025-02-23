@@ -7,9 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.Player;
+import vn.ptit.project.epl_web.dto.request.player.RequestCreatePlayerDTO;
+import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponseCreatePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponseUpdatePlayerDTO;
 import vn.ptit.project.epl_web.service.PlayerService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
@@ -27,20 +32,22 @@ public class PlayerController {
 
     @PostMapping("")
     @ApiMessage("Create a new player")
-    public ResponseEntity<ResponseCreatePlayerDTO> createNewPlayer(@RequestBody RequestCreatePlayerDTO player) {
-        Player newPlayer = this.playerService.handleCreatePlayer(this.playerService.convertRequestCreatePlayerDTOtoPlayer(player));
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.playerService.convertPlayerToResponseCreatePlayerDTO(newPlayer));
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseCreatePlayerDTO> createNewPlayer(@Valid @RequestBody RequestCreatePlayerDTO player) {
+        Player newPlayer = this.playerService.handleCreatePlayer(this.playerService.requestPlayerDTOtoPlayer(player));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.playerService.playerToResponseCreatePlayerDTO(newPlayer));
     }
 
     @PutMapping("")
     @ApiMessage("Update a player")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseUpdatePlayerDTO> updateAPlayer(@Valid @RequestBody RequestUpdatePlayerDTO playerDTO) throws InvalidRequestException {
         Optional<Player> player = this.playerService.getPlayerById(playerDTO.getId());
         if (player.isEmpty()) {
             throw new InvalidRequestException("Player with id = " + playerDTO.getId() + " not found.");
         }
         Player updatedPlayer = this.playerService.handleUpdatePlayer(player.get(), playerDTO);
-        return ResponseEntity.ok().body(this.playerService.convertPlayerToResponseUpdatePlayerDTO(updatedPlayer));
+        return ResponseEntity.ok().body(this.playerService.playerToResponseUpdatePlayerDTO(updatedPlayer));
     }
     @GetMapping("/players/{id}")
     @ApiMessage("Fetch a player")
@@ -61,11 +68,12 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.fetchAllPlayers(spec, pageable));
     }
 
-    @DeleteMapping("/players/{id}")
-    @ApiMessage("Delete a player")
-    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {
-        this.playerService.handleDeletePlayer(id);
-        return ResponseEntity.ok(null);
-    }
+//    @DeleteMapping("/players/{id}")
+//    @ApiMessage("Delete a player")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {
+//        this.playerService.handleDeletePlayer(id);
+//        return ResponseEntity.ok(null);
+//    }
 
 }

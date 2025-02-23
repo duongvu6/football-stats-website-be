@@ -2,6 +2,7 @@ package vn.ptit.project.epl_web.util.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -30,7 +31,7 @@ public class GlobalException {
 
     @ExceptionHandler(value = {
             InvalidRequestException.class,
-            UsernameNotFoundException.class
+            UsernameNotFoundException.class,
     } )
     public ResponseEntity<RestResponse<Object>> handleInvalidRequestException(InvalidRequestException exception) {
         RestResponse<Object> response = new RestResponse<>();
@@ -63,5 +64,12 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 
     }
-
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<RestResponse<Object>> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+        RestResponse<Object> response = new RestResponse<>();
+        response.setStatusCode(HttpStatus.FORBIDDEN.value());
+        response.setMessage(exception.getMessage());
+        response.setError("Authorization Denied");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 }

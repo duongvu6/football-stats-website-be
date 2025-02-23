@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class ResponseUpdatePlayerDTO {
+public class ResponseCreatePlayerDTO {
     private Long id;
     private String name;
     private int age;

@@ -17,8 +17,8 @@ public class Player {
     private String name;
     private int age;
     private LocalDateTime dob;
-    private int shirt_number;
-    private double market_value;
+    private int shirtNumber;
+    private double marketValue;
     @ElementCollection
     @CollectionTable(name = "player_citizenship", joinColumns = @JoinColumn(name = "player_id"))
     @Column(name = "citizenship")
