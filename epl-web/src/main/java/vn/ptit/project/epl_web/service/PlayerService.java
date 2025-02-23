@@ -66,17 +66,17 @@ public class PlayerService {
         result.setResult(list);
         return result;
     }
-//    public void handleDeletePlayer(Long id) {
-//        Optional<Player> player = this.playerRepository.findById(id);
-//        if (player.isPresent()) {
-//            Player deletedPlayer = player.get();
-//            //TODO delete all club related
-//
-//
-//        }
-//
-//
-//        this.playerRepository.deleteById(id);
-//    }
+    public void handleDeletePlayer(Long id) {
+        Optional<Player> player = this.playerRepository.findById(id);
+        if (player.isPresent()) {
+            Player deletedPlayer = player.get();
+            //TODO delete all club related
+
+
+        }
+
+
+        this.playerRepository.deleteById(id);
+    }
 
 }

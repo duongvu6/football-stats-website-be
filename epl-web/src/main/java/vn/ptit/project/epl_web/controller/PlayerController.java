@@ -68,12 +68,12 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.fetchAllPlayers(spec, pageable));
     }
 
-//    @DeleteMapping("/players/{id}")
-//    @ApiMessage("Delete a player")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {
-//        this.playerService.handleDeletePlayer(id);
-//        return ResponseEntity.ok(null);
-//    }
+    @DeleteMapping("/players/{id}")
+    @ApiMessage("Delete a player")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {
+        this.playerService.handleDeletePlayer(id);
+        return ResponseEntity.ok(null);
+    }
 
 }
