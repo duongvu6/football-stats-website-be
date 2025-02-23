@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class MatchAction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String action;
     private int minute;
     @ManyToOne

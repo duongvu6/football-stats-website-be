@@ -12,7 +12,7 @@ public class League {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     @OneToMany(mappedBy = "league",cascade = CascadeType.ALL)
     private Set<LeagueSeason> leageSeasons;

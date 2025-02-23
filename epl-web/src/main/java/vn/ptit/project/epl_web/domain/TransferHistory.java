@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class TransferHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private LocalDateTime date;
     private String type;
     private double playerValue,fee;
