@@ -11,13 +11,13 @@ public class MatchAction {
     private int minute;
     @ManyToOne
     @JoinColumn(name="host_id")
-    private Club host;
-    @ManyToOne
+//    private Club hostTeam;
+//    @ManyToOne
     @JoinColumn(name="away_id")
-    private Club away;
-    @ManyToOne
+//    private Club awayTeam;
+//    @ManyToOne
     @JoinColumn(name="season_id")
-    private LeagueSeason season;
+    private Match match;
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player player;

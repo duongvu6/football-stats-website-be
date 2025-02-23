@@ -9,6 +9,7 @@ import java.util.Set;
 @Table(name="leagues")
 @Data
 public class League {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,4 +17,8 @@ public class League {
     @OneToMany(mappedBy = "league",cascade = CascadeType.ALL)
     private Set<LeagueSeason> leageSeasons;
 
+    public League(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
