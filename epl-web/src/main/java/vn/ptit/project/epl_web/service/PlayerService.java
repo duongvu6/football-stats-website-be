@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class PlayerService {
-    private PlayerRepository playerRepository;
-    private ModelMapper mapper;
+    private final PlayerRepository playerRepository;
+    private final ModelMapper mapper;
     public PlayerService(PlayerRepository playerRepository, ModelMapper mapper) {
         this.playerRepository = playerRepository;
         this.mapper = mapper;

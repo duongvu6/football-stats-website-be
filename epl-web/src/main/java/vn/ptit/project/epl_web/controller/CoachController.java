@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
@@ -29,6 +30,7 @@ public class CoachController {
 
     @PostMapping("")
     @ApiMessage("Create a new head coach")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseCreateCoachDTO> createNewCoach(@Valid @RequestBody RequestCreateCoachDTO coachDTO) {
         HeadCoach newCoach = this.coachService.handleCreateCoach(this.coachService.requestCreateCoachDTOtoCoach(coachDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.coachService.coachToResponseCreateCoachDTO(newCoach));
@@ -36,6 +38,7 @@ public class CoachController {
 
     @PutMapping("")
     @ApiMessage("Update a coach")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseUpdateCoachDTO> updateACoach(@Valid @RequestBody RequestUpdateCoachDTO coachDTO) throws InvalidRequestException {
         Optional<HeadCoach> coach = this.coachService.getCoachById(coachDTO.getId());
         if (coach.isEmpty()) {
@@ -64,6 +67,7 @@ public class CoachController {
     }
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a coach")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteACoach(@PathVariable Long id ) {
         this.coachService.handleDeleteCoach(id);
         return ResponseEntity.ok(null);
