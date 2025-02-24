@@ -85,11 +85,15 @@ public class PlayerService {
         result.setResult(list);
         return result;
     }
+
+    @Transactional
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
-        ResponsePlayerDTO playerDTO =  this.mapper.map(player, ResponsePlayerDTO.class);
+        List<TransferHistory> transferHistoryList = player.getTransferHistories();
+        ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
         Set<ResponseCreateTransferHistoryDTO> transferHistories = new HashSet<>();
-        for (TransferHistory th : new ArrayList<>(player.getTransferHistories())) {
-            transferHistories.add(this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th));
+        for (TransferHistory th : transferHistoryList) {
+            ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
+            transferHistories.add(newThDTO);
         }
         playerDTO.setTransferHistories(transferHistories);
         return playerDTO;

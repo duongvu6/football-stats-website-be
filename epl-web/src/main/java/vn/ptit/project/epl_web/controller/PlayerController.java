@@ -60,6 +60,7 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.playerToResponsePlayerDTO(player.get()));
     }
 
+
     @GetMapping("")
     @ApiMessage("Fetch all players")
     public ResponseEntity<ResultPaginationDTO> fetchAllPlayers(

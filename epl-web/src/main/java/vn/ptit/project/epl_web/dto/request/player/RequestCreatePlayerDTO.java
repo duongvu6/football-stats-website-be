@@ -27,5 +27,5 @@ public class RequestCreatePlayerDTO {
     @NotNull(message = "Citizenship must not be null")
     private Set<String> citizenships;
     @NotNull(message = "Positions must not be null")
-    private Set<String> postions;
+    private Set<String> positions;
 }
