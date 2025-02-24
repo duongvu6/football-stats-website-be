@@ -2,8 +2,8 @@ package vn.ptit.project.epl_web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import vn.ptit.project.epl_web.domain.League;
-import vn.ptit.project.epl_web.domain.Player;
+
+import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class EplWebApplication {

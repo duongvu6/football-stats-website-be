@@ -14,6 +14,7 @@ import vn.ptit.project.epl_web.dto.request.player.RequestCreatePlayerDTO;
 import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponseCreatePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponseUpdatePlayerDTO;
 import vn.ptit.project.epl_web.service.PlayerService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
@@ -49,17 +50,17 @@ public class PlayerController {
         Player updatedPlayer = this.playerService.handleUpdatePlayer(player.get(), playerDTO);
         return ResponseEntity.ok().body(this.playerService.playerToResponseUpdatePlayerDTO(updatedPlayer));
     }
-    @GetMapping("/players/{id}")
+    @GetMapping("/{id}")
     @ApiMessage("Fetch a player")
-    public ResponseEntity<Player> fetchAPlayer(@PathVariable Long id) throws InvalidRequestException {
+    public ResponseEntity<ResponsePlayerDTO> fetchAPlayer(@PathVariable Long id) throws InvalidRequestException {
         Optional<Player> player = this.playerService.getPlayerById(id);
         if (player.isEmpty()) {
             throw new InvalidRequestException("Player with id = " + id + " not found.");
         }
-        return ResponseEntity.ok(player.get());
+        return ResponseEntity.ok(this.playerService.playerToResponsePlayerDTO(player.get()));
     }
 
-    @GetMapping("/players")
+    @GetMapping("")
     @ApiMessage("Fetch all players")
     public ResponseEntity<ResultPaginationDTO> fetchAllPlayers(
             @Filter Specification<Player> spec,
@@ -68,7 +69,7 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.fetchAllPlayers(spec, pageable));
     }
 
-    @DeleteMapping("/players/{id}")
+    @DeleteMapping("/{id}")
     @ApiMessage("Delete a player")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {

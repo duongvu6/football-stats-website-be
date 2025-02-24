@@ -2,6 +2,8 @@ package vn.ptit.project.epl_web.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -9,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "players")
-@Data
+@Getter
+@Setter
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +32,19 @@ public class Player {
     private Set<String> postions;
     @OneToMany(mappedBy = "player")
     private Set<TransferHistory> transferHistories;
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", dob=" + dob +
+                ", shirtNumber=" + shirtNumber +
+                ", marketValue=" + marketValue +
+                ", citizenships=" + citizenships +
+                ", postions=" + postions +
+                ", transferHistories=" + transferHistories +
+                '}';
+    }
 }
