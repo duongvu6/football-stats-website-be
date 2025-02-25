@@ -29,7 +29,7 @@ public class Match {
 //    @OneToMany(mappedBy = "awayTeam")
 //    private Set<Club> awayClubs;
     @OneToMany(mappedBy = "match")
-    private Set<MatchAction> matchActions;
+    private List<MatchAction> matchActions;
 
 
     private int round,awayScore,hostScore;

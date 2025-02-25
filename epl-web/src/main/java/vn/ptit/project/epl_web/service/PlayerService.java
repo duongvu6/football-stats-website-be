@@ -90,7 +90,7 @@ public class PlayerService {
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
         List<TransferHistory> transferHistoryList = player.getTransferHistories();
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
-        Set<ResponseCreateTransferHistoryDTO> transferHistories = new HashSet<>();
+        List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
         for (TransferHistory th : transferHistoryList) {
             ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
             transferHistories.add(newThDTO);
@@ -98,7 +98,7 @@ public class PlayerService {
         playerDTO.setTransferHistories(transferHistories);
         return playerDTO;
     }
-    public void handleDeletePlayer(Long id) {
+    public void handleDeletePyer(Long id) {
         Optional<Player> player = this.playerRepository.findById(id);
         if (player.isPresent()) {
             Player deletedPlayer = player.get();

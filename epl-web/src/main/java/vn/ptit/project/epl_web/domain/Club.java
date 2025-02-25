@@ -3,6 +3,7 @@ package vn.ptit.project.epl_web.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,10 +18,10 @@ public class Club {
     private String country;
     private String stadiumName;
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-    private Set<CoachClub> coachClubs;
+    private List<CoachClub> coachClubs;
     @OneToMany(mappedBy = "club")
-    private Set<ClubSeasonTable> clubSeasonTables;
+    private List<ClubSeasonTable> clubSeasonTables;
     @OneToMany(mappedBy = "club")
-    private Set<TransferHistory> transferHistories;
+    private List<TransferHistory> transferHistories;
 
 }
