@@ -98,7 +98,7 @@ public class PlayerService {
         playerDTO.setTransferHistories(transferHistories);
         return playerDTO;
     }
-    public void handleDeletePyer(Long id) {
+    public void handleDeletePlayer(Long id) {
         Optional<Player> player = this.playerRepository.findById(id);
         if (player.isPresent()) {
             Player deletedPlayer = player.get();

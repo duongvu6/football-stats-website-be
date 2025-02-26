@@ -4,10 +4,13 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.domain.Player;
 import vn.ptit.project.epl_web.domain.TransferHistory;
+import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
+import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 
@@ -44,6 +47,21 @@ public class ModelMapperConfig {
             @Override
             protected void configure() {
                 skip(destination.getTransferHistories());
+            }
+        });
+        mapper.addMappings(new PropertyMap<RequestCreateLeagueDTO, League>() {
+
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+                skip(destination.getLeagueSeasons());
+            }
+        });
+        mapper.addMappings(new PropertyMap<League, ResponseCreateLeagueDTO>() {
+
+            @Override
+            protected void configure() {
+
             }
         });
 
