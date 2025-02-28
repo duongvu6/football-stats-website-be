@@ -5,12 +5,16 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.ptit.project.epl_web.domain.League;
+import vn.ptit.project.epl_web.domain.LeagueSeason;
 import vn.ptit.project.epl_web.domain.Player;
 import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
+import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
+import vn.ptit.project.epl_web.dto.response.league.ResponseUpdateLeagueDTO;
+import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 
@@ -64,6 +68,21 @@ public class ModelMapperConfig {
 
             }
         });
+        mapper.addMappings(new PropertyMap<RequestUpdateLeagueDTO, League>() {
+
+            @Override
+            protected void configure() {
+                skip(destination.getLeagueSeasons());
+            }
+        });
+        mapper.addMappings(new PropertyMap<LeagueSeason, ResponseCreateLeagueSeasonDTO>() {
+
+            @Override
+            protected void configure() {
+
+            }
+        });
+
 
         return mapper;
     }
