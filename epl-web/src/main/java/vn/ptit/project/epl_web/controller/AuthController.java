@@ -30,8 +30,8 @@ import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private AuthenticationManagerBuilder authenticationManagerBuilder;
-    private SecurityUtil securityUtil;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final SecurityUtil securityUtil;
 
     @Value("${jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
