@@ -20,7 +20,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int age;
+//    private int age;
     private LocalDateTime dob;
     private int shirtNumber;
     private double marketValue;
@@ -34,6 +34,8 @@ public class Player {
     private List<String> positions;
     @OneToMany(mappedBy = "player")
     private List<TransferHistory> transferHistories;
+
+//    private Club currentClub;
 
     @Transactional
     public List<TransferHistory> getTransferHistories() {

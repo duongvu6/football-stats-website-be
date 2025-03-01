@@ -19,6 +19,9 @@ import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransf
 import vn.ptit.project.epl_web.repository.PlayerRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,10 +45,15 @@ public class PlayerService {
         return this.mapper.map(playerDTO, Player.class);
     }
     public ResponseCreatePlayerDTO playerToResponseCreatePlayerDTO(Player player) {
-        return this.mapper.map(player, ResponseCreatePlayerDTO.class);
+        ResponseCreatePlayerDTO playerDTO = this.mapper.map(player, ResponseCreatePlayerDTO.class);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        return playerDTO;
     }
     public ResponseUpdatePlayerDTO playerToResponseUpdatePlayerDTO(Player player) {
-        return this.mapper.map(player, ResponseUpdatePlayerDTO.class);
+        ResponseUpdatePlayerDTO playerDTO = this.mapper.map(player, ResponseUpdatePlayerDTO.class);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
+        return playerDTO;
     }
     public Player handleUpdatePlayer(Player player, RequestUpdatePlayerDTO playerDTO) throws InvalidRequestException {
         this.mapper.map(playerDTO, player);
@@ -83,15 +91,19 @@ public class PlayerService {
 
     @Transactional
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
-        List<TransferHistory> transferHistoryList = player.getTransferHistories();
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+        playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        return playerDTO;
+    }
+    public List<ResponseCreateTransferHistoryDTO> mapTransferHistoryFromPlayer(Player player) {
+        List<TransferHistory> transferHistoryList = player.getTransferHistories();
         List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
         for (TransferHistory th : transferHistoryList) {
             ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
             transferHistories.add(newThDTO);
         }
-        playerDTO.setTransferHistories(transferHistories);
-        return playerDTO;
+        return transferHistories;
     }
     public void handleDeletePlayer(Long id) {
         Optional<Player> player = this.playerRepository.findById(id);
@@ -120,6 +132,7 @@ public class PlayerService {
                 .collect(Collectors.toList());
 
         playerDTO.setTransferHistories(transferHistoriesDTOs);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
         return playerDTO;
     }
 
@@ -145,6 +158,7 @@ public class PlayerService {
                             .collect(Collectors.toList());
 
                     playerDTO.setTransferHistories(transferHistoriesDTOs);
+                    playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
                     return playerDTO;
                 })
                 .collect(Collectors.toList());
@@ -161,5 +175,14 @@ public class PlayerService {
         meta.setTotal(pagePlayer.getTotalElements());
         result.setMeta(meta);
         return result;
+    }
+    public static int calculateAge(LocalDateTime dob) {
+        // Convert LocalDateTime to LocalDate
+        LocalDate birthDate = dob.toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate the period between the two dates
+        Period period = Period.between(birthDate, currentDate);
+        return period.getYears(); // Get the number of years
     }
 }

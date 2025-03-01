@@ -15,9 +15,9 @@ import java.util.Set;
 public class RequestCreatePlayerDTO {
     @NotBlank(message = "Name must not be blank")
     private String name;
-    @Positive(message = "Age must be positive number")
-    @NotNull(message = "Age must not be blank")
-    private int age;
+//    @Positive(message = "Age must be positive number")
+//    @NotNull(message = "Age must not be blank")
+//    private int age;
     @NotNull(message = "Date of birth must not be blank")
     private LocalDateTime dob;
     @NotNull(message = "Shirt number must not be blank")
