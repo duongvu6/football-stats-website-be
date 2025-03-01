@@ -33,6 +33,7 @@ public class PlayerService {
         this.transferHistoryService = transferHistoryService;
     }
 
+
     public Player handleCreatePlayer(Player player) {
         return this.playerRepository.save(player);
     }
@@ -72,13 +73,7 @@ public class PlayerService {
 
     public ResultPaginationDTO fetchAllPlayers(Specification<Player> spec, Pageable pageable) {
         Page<Player> pagePlayer = this.playerRepository.findAll(pageable);
-        ResultPaginationDTO result = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
-        meta.setPage(pageable.getPageNumber() + 1);
-        meta.setPageSize(pageable.getPageSize());
-        meta.setPages(pagePlayer.getTotalPages());
-        meta.setTotal(pagePlayer.getTotalElements());
-        result.setMeta(meta);
+        ResultPaginationDTO result = setResultPaginationDTO(pageable, pagePlayer, spec);
         List<ResponsePlayerDTO> list = pagePlayer.getContent().stream()
                 .map(this::playerToResponsePlayerDTO)
                 .collect(Collectors.toList());
@@ -111,4 +106,60 @@ public class PlayerService {
         this.playerRepository.deleteById(id);
     }
 
+    public ResponsePlayerDTO playerToResponsePlayerDTOWithSortedTransferHistory(Player player) throws InvalidRequestException {
+        ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+
+        // Sort transfer histories by date in descending order
+        List<TransferHistory> sortedTransferHistories = player.getTransferHistories().stream()
+                .sorted(Comparator.comparing(TransferHistory::getDate).reversed())
+                .toList();
+
+        // Map to DTOs
+        List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
+                .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
+                .collect(Collectors.toList());
+
+        playerDTO.setTransferHistories(transferHistoriesDTOs);
+        return playerDTO;
+    }
+
+    @Transactional
+    public ResultPaginationDTO fetchAllPlayersWithSortedTransferHistories(Specification<Player> spec, Pageable pageable) {
+        // Using existing pagination functionality
+        Page<Player> pagePlayer = this.playerRepository.findAll(spec, pageable);
+        ResultPaginationDTO result = setResultPaginationDTO(pageable, pagePlayer, spec);
+
+        // For each player, sort their transfer histories
+        List<ResponsePlayerDTO> list = pagePlayer.getContent().stream()
+                .map(player -> {
+                    ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+
+                    // Sort transfer histories by date in descending order
+                    List<TransferHistory> sortedTransferHistories = player.getTransferHistories().stream()
+                            .sorted(Comparator.comparing(TransferHistory::getDate).reversed())
+                            .toList();
+
+                    // Map to DTOs
+                    List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
+                            .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
+                            .collect(Collectors.toList());
+
+                    playerDTO.setTransferHistories(transferHistoriesDTOs);
+                    return playerDTO;
+                })
+                .collect(Collectors.toList());
+
+        result.setResult(list);
+        return result;
+    }
+    public ResultPaginationDTO setResultPaginationDTO (Pageable pageable, Page<Player>pagePlayer, Specification<Player> spec) {
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+        meta.setPages(pagePlayer.getTotalPages());
+        meta.setTotal(pagePlayer.getTotalElements());
+        result.setMeta(meta);
+        return result;
+    }
 }

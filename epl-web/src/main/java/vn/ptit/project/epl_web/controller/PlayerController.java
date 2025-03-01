@@ -52,10 +52,16 @@ public class PlayerController {
     }
     @GetMapping("/{id}")
     @ApiMessage("Fetch a player")
-    public ResponseEntity<ResponsePlayerDTO> fetchAPlayer(@PathVariable Long id) throws InvalidRequestException {
+    public ResponseEntity<ResponsePlayerDTO> fetchAPlayer
+            (@PathVariable Long id,
+             @RequestParam(required = false, defaultValue = "false") boolean sortTransferHistory
+    ) throws InvalidRequestException {
         Optional<Player> player = this.playerService.getPlayerById(id);
         if (player.isEmpty()) {
             throw new InvalidRequestException("Player with id = " + id + " not found.");
+        }
+        if (sortTransferHistory) {
+            return ResponseEntity.ok(this.playerService.playerToResponsePlayerDTOWithSortedTransferHistory(player.get()));
         }
         return ResponseEntity.ok(this.playerService.playerToResponsePlayerDTO(player.get()));
     }
@@ -65,8 +71,12 @@ public class PlayerController {
     @ApiMessage("Fetch all players")
     public ResponseEntity<ResultPaginationDTO> fetchAllPlayers(
             @Filter Specification<Player> spec,
-            Pageable pageable
+            Pageable pageable,
+            @RequestParam(required = false, defaultValue = "false") boolean sortTransferHistory
     ) {
+        if (sortTransferHistory) {
+            return ResponseEntity.ok(this.playerService.fetchAllPlayersWithSortedTransferHistories(spec, pageable));
+        }
         return ResponseEntity.ok(this.playerService.fetchAllPlayers(spec, pageable));
     }
 
