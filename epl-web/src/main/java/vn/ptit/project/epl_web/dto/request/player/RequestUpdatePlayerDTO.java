@@ -8,6 +8,7 @@ import lombok.Setter;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 @Getter
 @Setter
@@ -26,8 +27,8 @@ public class RequestUpdatePlayerDTO {
     @Positive(message = "Market value must be positive number")
     private double marketValue;
     @NotNull(message = "Citizenship must not be null")
-    private Set<String> citizenships;
+    private List<String> citizenships;
     @NotNull(message = "Positions must not be null")
-    private Set<String> positions;
-    private Set<RequestCreateTransferHistoryDTO> transferHistories;
+    private List<String> positions;
+    private List<RequestCreateTransferHistoryDTO> transferHistories;
 }

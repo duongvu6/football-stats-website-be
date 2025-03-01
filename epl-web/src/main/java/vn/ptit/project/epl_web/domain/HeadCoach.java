@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,8 +20,8 @@ public class HeadCoach {
     @ElementCollection
     @CollectionTable(name = "coach_citizenship", joinColumns = @JoinColumn(name = "head_coach_id"))
     @Column(name = "citizenship")
-    private Set<String> citizenships;
+    private List<String> citizenships;
     @OneToMany(mappedBy = "headCoach",cascade = CascadeType.ALL)
-    private Set<CoachClub> coachClubs;
+    private List<CoachClub> coachClubs;
 
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,7 +26,7 @@ public class RequestCreatePlayerDTO {
     @Positive(message = "Market value must be positive number")
     private double marketValue;
     @NotNull(message = "Citizenship must not be null")
-    private Set<String> citizenships;
+    private List<String> citizenships;
     @NotNull(message = "Positions must not be null")
-    private Set<String> positions;
+    private List<String> positions;
 }

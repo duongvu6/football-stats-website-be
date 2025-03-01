@@ -54,10 +54,10 @@ public class PlayerService {
             // lấy transferhistory dto từ cầu thủ (là thuộc tính cua cau thu)
             List<RequestCreateTransferHistoryDTO> transferHistories = new ArrayList<>(playerDTO.getTransferHistories());
             // tao moi list cua transferhistory tao ra
-            List<TransferHistory> createdTransferHistories = new ArrayList<>();
+            //List<TransferHistory> createdTransferHistories = new ArrayList<>();
             // tao transferhistory
             for (RequestCreateTransferHistoryDTO dto : transferHistories) {
-                createdTransferHistories.add(this.transferHistoryService.createTransferHistory(dto));
+                this.transferHistoryService.createTransferHistory(dto);
             }
 //            player.setTransferHistories(new HashSet<>(createdTransferHistories));
         }
@@ -90,7 +90,7 @@ public class PlayerService {
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
         List<TransferHistory> transferHistoryList = player.getTransferHistories();
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
-        Set<ResponseCreateTransferHistoryDTO> transferHistories = new HashSet<>();
+        List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
         for (TransferHistory th : transferHistoryList) {
             ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
             transferHistories.add(newThDTO);

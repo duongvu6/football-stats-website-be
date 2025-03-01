@@ -27,11 +27,11 @@ public class Player {
     @ElementCollection
     @CollectionTable(name = "player_citizenship", joinColumns = @JoinColumn(name = "player_id"))
     @Column(name = "citizenship")
-    private Set<String> citizenships;
+    private List<String> citizenships;
     @ElementCollection
     @CollectionTable(name = "player_position", joinColumns = @JoinColumn(name = "player_id"))
     @Column(name = "position")
-    private Set<String> positions;
+    private List<String> positions;
     @OneToMany(mappedBy = "player")
     private List<TransferHistory> transferHistories;
 

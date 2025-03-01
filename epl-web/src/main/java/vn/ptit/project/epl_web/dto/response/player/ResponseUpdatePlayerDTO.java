@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,6 +16,6 @@ public class ResponseUpdatePlayerDTO {
     private LocalDateTime dob;
     private int shirtNumber;
     private double marketValue;
-    private Set<String> citizenships;
-    private Set<String> positions;
+    private List<String> citizenships;
+    private List<String> positions;
 }
