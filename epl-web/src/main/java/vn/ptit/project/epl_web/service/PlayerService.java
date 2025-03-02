@@ -176,13 +176,11 @@ public class PlayerService {
         result.setMeta(meta);
         return result;
     }
-    public static int calculateAge(LocalDateTime dob) {
-        // Convert LocalDateTime to LocalDate
-        LocalDate birthDate = dob.toLocalDate();
+    public static int calculateAge(LocalDate dob) {
         LocalDate currentDate = LocalDate.now();
 
         // Calculate the period between the two dates
-        Period period = Period.between(birthDate, currentDate);
+        Period period = Period.between(dob, currentDate);
         return period.getYears(); // Get the number of years
     }
 }

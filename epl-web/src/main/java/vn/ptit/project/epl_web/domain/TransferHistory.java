@@ -13,7 +13,7 @@ public class TransferHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date;
+    private LocalDate date;
     private String type;
     private double playerValue,fee;
     @ManyToOne

@@ -3,6 +3,7 @@ package vn.ptit.project.epl_web.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +17,7 @@ public class HeadCoach {
     private Long id;
     private String name;
     private int age;
-    private LocalDateTime dob;
+    private LocalDate dob;
     @ElementCollection
     @CollectionTable(name = "coach_citizenship", joinColumns = @JoinColumn(name = "head_coach_id"))
     @Column(name = "citizenship")

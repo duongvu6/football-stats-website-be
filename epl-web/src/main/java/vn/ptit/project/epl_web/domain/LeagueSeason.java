@@ -3,6 +3,7 @@ package vn.ptit.project.epl_web.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -15,9 +16,9 @@ public class LeagueSeason {
     private Long id;
     private String name;
     @Column(nullable=true)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @Column(nullable=true)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
     @ManyToOne
     @JoinColumn(name = "league_id")
     private League league;

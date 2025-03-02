@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class RequestCreatePlayerDTO {
 //    @NotNull(message = "Age must not be blank")
 //    private int age;
     @NotNull(message = "Date of birth must not be blank")
-    private LocalDateTime dob;
+    private LocalDate dob;
     @NotNull(message = "Shirt number must not be blank")
     @Positive(message = "Shirt number must be positive number")
     private int shirtNumber;
