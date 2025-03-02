@@ -6,11 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.Club;
+import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
+import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.ClubRepository;
 
 import java.util.ArrayList;
@@ -21,10 +24,12 @@ import java.util.Optional;
 public class ClubService {
     private final ClubRepository clubRepository;
     private final ModelMapper modelMapper;
+    private final TransferHistoryService transferHistoryService;
 
-    public ClubService(ClubRepository clubRepository, ModelMapper modelMapper) {
+    public ClubService(ClubRepository clubRepository, ModelMapper modelMapper, TransferHistoryService transferHistoryService) {
         this.clubRepository = clubRepository;
         this.modelMapper = modelMapper;
+        this.transferHistoryService = transferHistoryService;
     }
 
     public Club handleCreateClub(Club club) {
@@ -56,7 +61,7 @@ public class ClubService {
 
     }
     public ResultPaginationDTO fetchAllClubs(Specification<Club> spec, Pageable pageable) {
-        Page<Club> clubPage = this.clubRepository.findAll(pageable);
+        Page<Club> clubPage = this.clubRepository.findAll(spec, pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
@@ -64,7 +69,7 @@ public class ClubService {
         meta.setPages(clubPage.getTotalPages());
         meta.setTotal(clubPage.getTotalElements());
         result.setMeta(meta);
-        List<Club> list = new ArrayList<>(clubPage.getContent());
+        List<ResponseClubDTO> list = clubPage.getContent().stream().map(this::clubToResponseClubDTO).toList();
         result.setResult(list);
         return result;
     }
@@ -81,5 +86,15 @@ public class ClubService {
 
 
         this.clubRepository.deleteById(id);
+    }
+
+    public ResponseClubDTO clubToResponseClubDTO(Club club) {
+        ResponseClubDTO clubDTO = this.modelMapper.map(club, ResponseClubDTO.class);
+        List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
+        for (TransferHistory th : club.getTransferHistories()) {
+            transferHistories.add(this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th));
+        }
+        clubDTO.setTransferHistories(transferHistories);
+        return clubDTO;
     }
 }

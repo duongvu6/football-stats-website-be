@@ -12,6 +12,7 @@ import vn.ptit.project.epl_web.domain.Club;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
 import vn.ptit.project.epl_web.service.ClubService;
@@ -48,12 +49,12 @@ public class ClubController {
     }
     @GetMapping("/{id}")
     @ApiMessage("Fetch a club")
-    public ResponseEntity<Club> getAClub(@PathVariable Long id) throws InvalidRequestException {
+    public ResponseEntity<ResponseClubDTO> getAClub(@PathVariable Long id) throws InvalidRequestException {
         Optional<Club> club = this.clubService.getClubById(id);
         if (club.isEmpty()) {
             throw new InvalidRequestException("Club with id = " + id + " not found.");
         }
-        return ResponseEntity.ok(club.get());
+        return ResponseEntity.ok(this.clubService.clubToResponseClubDTO(club.get()));
     }
 
     @GetMapping("")

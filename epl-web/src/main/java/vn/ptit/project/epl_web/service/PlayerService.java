@@ -80,7 +80,7 @@ public class PlayerService {
 
 
     public ResultPaginationDTO fetchAllPlayers(Specification<Player> spec, Pageable pageable) {
-        Page<Player> pagePlayer = this.playerRepository.findAll(pageable);
+        Page<Player> pagePlayer = this.playerRepository.findAll(spec, pageable);
         ResultPaginationDTO result = setResultPaginationDTO(pageable, pagePlayer, spec);
         List<ResponsePlayerDTO> list = pagePlayer.getContent().stream()
                 .map(this::playerToResponsePlayerDTO)

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class RequestCreateTransferHistoryDTO {
     private LocalDate date;
     private String type;
-    private double playerValue,fee;
+    private double playerValue, fee;
     private Long player;
     private Long club;
 }

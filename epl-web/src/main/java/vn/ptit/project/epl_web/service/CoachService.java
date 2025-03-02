@@ -58,7 +58,7 @@ public class CoachService {
     }
 
     public ResultPaginationDTO fetchAllCoaches(Specification<HeadCoach> spec, Pageable pageable) {
-        Page<HeadCoach> coachPage = this.coachRepository.findAll(pageable);
+        Page<HeadCoach> coachPage = this.coachRepository.findAll(spec, pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
