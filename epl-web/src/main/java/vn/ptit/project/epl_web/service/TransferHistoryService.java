@@ -8,12 +8,14 @@ import vn.ptit.project.epl_web.domain.Club;
 import vn.ptit.project.epl_web.domain.Player;
 import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
+import vn.ptit.project.epl_web.dto.request.transferhistory.RequestUpdateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.ClubRepository;
 import vn.ptit.project.epl_web.repository.PlayerRepository;
 import vn.ptit.project.epl_web.repository.TransferHistoryRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -50,21 +52,37 @@ public class TransferHistoryService {
     }
     public TransferHistory requestCreateTransferHistoryDTOtoTransferHistory(RequestCreateTransferHistoryDTO thDTO) throws InvalidRequestException {
         TransferHistory transferHistory = this.mapper.map(thDTO, TransferHistory.class);
-        Optional<Player> player = this.playerRepository.findById(thDTO.getPlayer());
-        Optional<Club> club = this.clubRepository.findById(thDTO.getClub());
+        Long playerId = thDTO.getPlayer();
+        Long clubId = thDTO.getClub();
+        Optional<Player> player = this.playerRepository.findById(playerId);
+        Optional<Club> club = this.clubRepository.findById(clubId);
+        return this.mapPlayerAndClub(player, club, transferHistory, playerId, clubId);
+    }
+    public TransferHistory mapPlayerAndClub(Optional<Player> player, Optional<Club> club, TransferHistory transferHistory, Long playerId, Long clubId) throws InvalidRequestException {
         if (player.isPresent()) {
             transferHistory.setPlayer(player.get());
         } else {
-            throw new InvalidRequestException("Player with id = " + thDTO.getPlayer() + " not found.");
+            throw new InvalidRequestException("Player with id = " + playerId + " not found.");
         }
         if (club.isPresent()) {
             transferHistory.setClub(club.get());
         } else {
-            throw new InvalidRequestException("Club with id = " + thDTO.getClub() + " not found.");
+            throw new InvalidRequestException("Club with id = " + clubId + " not found.");
         }
         return transferHistory;
     }
-
+    public TransferHistory requestUpdateTransferHistoryDTOtoTransferHistory(RequestUpdateTransferHistoryDTO thDTO) throws InvalidRequestException {
+        TransferHistory transferHistory = this.mapper.map(thDTO, TransferHistory.class);
+        transferHistory.setId(thDTO.getId());
+        Long playerId = thDTO.getPlayer();
+        Long clubId = thDTO.getClub();
+        Optional<Player> player = this.playerRepository.findById(playerId);
+        Optional<Club> club = this.clubRepository.findById(clubId);
+        return this.mapPlayerAndClub(player, club, transferHistory, playerId, clubId);
+    }
+    public TransferHistory handleUpdateTransferHistory(TransferHistory th) {
+        return this.repository.save(th);
+    }
 
 
 }
