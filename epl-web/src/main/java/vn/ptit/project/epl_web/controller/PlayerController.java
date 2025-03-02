@@ -83,7 +83,7 @@ public class PlayerController {
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a player")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAPlayer(@PathVariable Long id) throws InvalidRequestException {
         this.playerService.handleDeletePlayer(id);
         return ResponseEntity.ok(null);
     }

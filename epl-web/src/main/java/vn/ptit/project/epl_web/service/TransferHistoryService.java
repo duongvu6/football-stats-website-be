@@ -84,5 +84,15 @@ public class TransferHistoryService {
         return this.repository.save(th);
     }
 
+    public void handleDeleteTransferHistory(Long id) throws InvalidRequestException {
+        Optional<TransferHistory> th = this.repository.findById(id);
+        if (th.isEmpty()) {
+            throw new InvalidRequestException("Transfer History with id = " + id + " not found");
+        }
+        TransferHistory transferHistory = th.get();
+        transferHistory.setClub(null);
+        transferHistory.setPlayer(null);
+        this.repository.delete(transferHistory);
+    }
 
 }

@@ -105,17 +105,18 @@ public class PlayerService {
         }
         return transferHistories;
     }
-    public void handleDeletePlayer(Long id) {
+    public void handleDeletePlayer(Long id) throws InvalidRequestException {
         Optional<Player> player = this.playerRepository.findById(id);
         if (player.isPresent()) {
             Player deletedPlayer = player.get();
             //TODO delete all club related
-
-
+            for (TransferHistory th : deletedPlayer.getTransferHistories()) {
+                this.transferHistoryService.handleDeleteTransferHistory(th.getId());
+            }
+            this.playerRepository.delete(deletedPlayer);
+        } else {
+            throw new InvalidRequestException("Player with id = " + id + " not found. ");
         }
-
-
-        this.playerRepository.deleteById(id);
     }
 
     public ResponsePlayerDTO playerToResponsePlayerDTOWithSortedTransferHistory(Player player) throws InvalidRequestException {
