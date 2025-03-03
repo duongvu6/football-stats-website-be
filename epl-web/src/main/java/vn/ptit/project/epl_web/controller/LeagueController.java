@@ -1,6 +1,9 @@
 package vn.ptit.project.epl_web.controller;
 
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,11 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
+import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseUpdateLeagueDTO;
 import vn.ptit.project.epl_web.service.LeagueService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
+
 
 @RestController
 @RequestMapping("api/v1/leagues")
@@ -47,5 +52,10 @@ public class LeagueController {
             throw new InvalidRequestException("League with id = " + id + " not found");
         }
         return ResponseEntity.ok().body(leagueService.leagueToResponseCreateLeagueDTO(league));
+    }
+    @GetMapping("")
+    @ApiMessage("fetch all leagues")
+    public ResponseEntity<ResultPaginationDTO> fetchAllLeagues(@Filter Specification<League> spec, Pageable pageable) {
+        return ResponseEntity.ok(this.leagueService.fetchAllLeagues(spec,pageable));
     }
 }

@@ -58,6 +58,8 @@ public class LeagueService {
         meta.setTotal(leaguePage.getTotalElements());
         result.setMeta(meta);
         List<ResponseCreateLeagueDTO> list=leaguePage.getContent().stream().map(this::leagueToResponseCreateLeagueDTO).collect(Collectors.toList());
+        result.setResult(list);
+        return result;
     }
 
 
