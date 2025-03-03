@@ -1,5 +1,5 @@
 -- Create the database
-CREATE DATABASE IF NOT EXISTS epl;
+CREATE DATABASE IF NOT EXISTS football_stat_web;
 
 -- Create the user
 CREATE USER IF NOT EXISTS 'test_user'@'%' IDENTIFIED BY 'superSecretPassword!123';
