@@ -25,14 +25,14 @@ public class LeagueController {
 
     @PostMapping("")
     @ApiMessage("Create new league")
-    //@PreAuthorize("ADMIN")
+    @PreAuthorize("ADMIN")
     public ResponseEntity<ResponseCreateLeagueDTO> createNewLeague(@Valid @RequestBody RequestCreateLeagueDTO leagueDTO) {
         League newLeague= leagueService.handleCreateLeague(leagueService.requestLeagueDTOtoLeague(leagueDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(leagueService.leagueToResponseCreateLeagueDTO(newLeague));
     }
     @PutMapping("")
     @ApiMessage("Update a league")
-    //@PreAuthorize("ADMIN")
+    @PreAuthorize("ADMIN")
     public ResponseEntity<ResponseUpdateLeagueDTO> updateLeague(@Valid @RequestBody RequestUpdateLeagueDTO leagueDTO) {
         League league=leagueService.findByLeagueId(leagueDTO.getId());
         League updatedLeague=this.leagueService.handleUpdateLeague(league, leagueDTO);
