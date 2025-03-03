@@ -37,7 +37,7 @@ public class OpenAPIConfig {
                 .info(createApiInfo())
                 .servers(List.of(
                         createServer("http://localhost:8080", "Server URL in testing"),
-                        createServer("https://crispy-doodle-69r6qgr645vp249rq-8080.app.github.dev/", "Server URL in Development environment"),
+                        createServer("https://glowing-system-9xr56pxwg46hx9wg-8080.app.github.dev/", "Server URL in Development environment"),
                         createServer("https://hoidanit.vn", "Server URL in Production environment")
                         )
                 )

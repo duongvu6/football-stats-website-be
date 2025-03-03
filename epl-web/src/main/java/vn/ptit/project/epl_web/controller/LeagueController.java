@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
