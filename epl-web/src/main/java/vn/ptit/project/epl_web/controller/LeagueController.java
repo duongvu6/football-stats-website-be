@@ -13,6 +13,7 @@ import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseUpdateLeagueDTO;
 import vn.ptit.project.epl_web.service.LeagueService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
 @RequestMapping("api/v1/leagues")
@@ -37,5 +38,14 @@ public class LeagueController {
         League league=leagueService.findByLeagueId(leagueDTO.getId());
         League updatedLeague=this.leagueService.handleUpdateLeague(league, leagueDTO);
         return ResponseEntity.ok().body(this.leagueService.leagueToResponseUpdateLeagueDTO(updatedLeague));
+    }
+    @GetMapping("/{id}")
+    @ApiMessage("Fetch a league")
+    public ResponseEntity<ResponseCreateLeagueDTO> findLeagueById(@PathVariable("id") Long id) throws InvalidRequestException {
+        League league=this.leagueService.findByLeagueId(id);
+        if (league==null) {
+            throw new InvalidRequestException("League with id = " + id + " not found");
+        }
+        return ResponseEntity.ok().body(leagueService.leagueToResponseCreateLeagueDTO(league));
     }
 }
