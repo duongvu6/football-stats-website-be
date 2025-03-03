@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +21,8 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int age;
-    private LocalDateTime dob;
+//    private int age;
+    private LocalDate dob;
     private int shirtNumber;
     private double marketValue;
     @ElementCollection
@@ -34,6 +35,8 @@ public class Player {
     private List<String> positions;
     @OneToMany(mappedBy = "player")
     private List<TransferHistory> transferHistories;
+
+//    private Club currentClub;
 
     @Transactional
     public List<TransferHistory> getTransferHistories() {

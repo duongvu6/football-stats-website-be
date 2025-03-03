@@ -13,5 +13,5 @@ import java.util.List;
 public class ResponseUpdateLeagueDTO {
     private Long id;
     private String name;
-    private List<ResponseCreateLeagueSeasonDTO> leagueSeasons;
+    private List<LeagueSeasonDTO> leagueSeasons;
 }

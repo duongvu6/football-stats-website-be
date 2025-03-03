@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
@@ -19,6 +18,7 @@ import vn.ptit.project.epl_web.service.LeagueService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
 @RequestMapping("api/v1/leagues")
@@ -31,16 +31,19 @@ public class LeagueController {
 
     @PostMapping("")
     @ApiMessage("Create new league")
-    //@PreAuthorize("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseCreateLeagueDTO> createNewLeague(@Valid @RequestBody RequestCreateLeagueDTO leagueDTO) {
         League newLeague= leagueService.handleCreateLeague(leagueService.requestLeagueDTOtoLeague(leagueDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(leagueService.leagueToResponseCreateLeagueDTO(newLeague));
     }
     @PutMapping("")
     @ApiMessage("Update a league")
-    //@PreAuthorize("ADMIN")
-    public ResponseEntity<ResponseUpdateLeagueDTO> updateLeague(@Valid @RequestBody RequestUpdateLeagueDTO leagueDTO) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseUpdateLeagueDTO> updateLeague(@Valid @RequestBody RequestUpdateLeagueDTO leagueDTO) throws InvalidRequestException {
         League league=leagueService.findByLeagueId(leagueDTO.getId());
+        if(league==null) {
+            throw new InvalidRequestException("League with id = " + leagueDTO.getId() + " not found.");
+        }
         League updatedLeague=this.leagueService.handleUpdateLeague(league, leagueDTO);
         return ResponseEntity.ok().body(this.leagueService.leagueToResponseUpdateLeagueDTO(updatedLeague));
     }

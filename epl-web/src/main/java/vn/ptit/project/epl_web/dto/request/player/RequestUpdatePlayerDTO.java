@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -16,11 +17,11 @@ public class RequestUpdatePlayerDTO {
     private Long id;
     @NotBlank(message = "Name must not be blank")
     private String name;
-    @Positive(message = "Age must be positive number")
-    @NotNull(message = "Age must not be blank")
-    private int age;
+//    @Positive(message = "Age must be positive number")
+//    @NotNull(message = "Age must not be blank")
+//    private int age;
     @NotNull(message = "Date of birth must not be blank")
-    private LocalDateTime dob;
+    private LocalDate dob;
     @NotNull(message = "Shirt number must not be blank")
     @Positive(message = "Shirt number must be positive number")
     private int shirtNumber;

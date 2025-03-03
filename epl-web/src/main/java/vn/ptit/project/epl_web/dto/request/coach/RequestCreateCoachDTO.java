@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class RequestCreateCoachDTO {
     @Positive(message = "Age must be positive number")
     private int age;
     @NotNull(message = "Date of birth must not be null")
-    private LocalDateTime dob;
+    private LocalDate dob;
     @NotNull(message = "Citizenship must not be null")
     private Set<String> citizenships;
 }

@@ -19,6 +19,9 @@ import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransf
 import vn.ptit.project.epl_web.repository.PlayerRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,7 @@ public class PlayerService {
         this.transferHistoryService = transferHistoryService;
     }
 
+
     public Player handleCreatePlayer(Player player) {
         return this.playerRepository.save(player);
     }
@@ -41,10 +45,15 @@ public class PlayerService {
         return this.mapper.map(playerDTO, Player.class);
     }
     public ResponseCreatePlayerDTO playerToResponseCreatePlayerDTO(Player player) {
-        return this.mapper.map(player, ResponseCreatePlayerDTO.class);
+        ResponseCreatePlayerDTO playerDTO = this.mapper.map(player, ResponseCreatePlayerDTO.class);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        return playerDTO;
     }
     public ResponseUpdatePlayerDTO playerToResponseUpdatePlayerDTO(Player player) {
-        return this.mapper.map(player, ResponseUpdatePlayerDTO.class);
+        ResponseUpdatePlayerDTO playerDTO = this.mapper.map(player, ResponseUpdatePlayerDTO.class);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
+        return playerDTO;
     }
     public Player handleUpdatePlayer(Player player, RequestUpdatePlayerDTO playerDTO) throws InvalidRequestException {
         this.mapper.map(playerDTO, player);
@@ -71,14 +80,8 @@ public class PlayerService {
 
 
     public ResultPaginationDTO fetchAllPlayers(Specification<Player> spec, Pageable pageable) {
-        Page<Player> pagePlayer = this.playerRepository.findAll(pageable);
-        ResultPaginationDTO result = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
-        meta.setPage(pageable.getPageNumber() + 1);
-        meta.setPageSize(pageable.getPageSize());
-        meta.setPages(pagePlayer.getTotalPages());
-        meta.setTotal(pagePlayer.getTotalElements());
-        result.setMeta(meta);
+        Page<Player> pagePlayer = this.playerRepository.findAll(spec, pageable);
+        ResultPaginationDTO result = setResultPaginationDTO(pageable, pagePlayer, spec);
         List<ResponsePlayerDTO> list = pagePlayer.getContent().stream()
                 .map(this::playerToResponsePlayerDTO)
                 .collect(Collectors.toList());
@@ -88,27 +91,97 @@ public class PlayerService {
 
     @Transactional
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
-        List<TransferHistory> transferHistoryList = player.getTransferHistories();
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+        playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        return playerDTO;
+    }
+    public List<ResponseCreateTransferHistoryDTO> mapTransferHistoryFromPlayer(Player player) {
+        List<TransferHistory> transferHistoryList = player.getTransferHistories();
         List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
         for (TransferHistory th : transferHistoryList) {
             ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
             transferHistories.add(newThDTO);
         }
-        playerDTO.setTransferHistories(transferHistories);
-        return playerDTO;
+        return transferHistories;
     }
-    public void handleDeletePlayer(Long id) {
+    public void handleDeletePlayer(Long id) throws InvalidRequestException {
         Optional<Player> player = this.playerRepository.findById(id);
         if (player.isPresent()) {
             Player deletedPlayer = player.get();
             //TODO delete all club related
-
-
+            for (TransferHistory th : deletedPlayer.getTransferHistories()) {
+                this.transferHistoryService.handleDeleteTransferHistory(th.getId());
+            }
+            this.playerRepository.delete(deletedPlayer);
+        } else {
+            throw new InvalidRequestException("Player with id = " + id + " not found. ");
         }
-
-
-        this.playerRepository.deleteById(id);
     }
 
+    public ResponsePlayerDTO playerToResponsePlayerDTOWithSortedTransferHistory(Player player) throws InvalidRequestException {
+        ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+
+        // Sort transfer histories by date in descending order
+        List<TransferHistory> sortedTransferHistories = player.getTransferHistories().stream()
+                .sorted(Comparator.comparing(TransferHistory::getDate).reversed())
+                .toList();
+
+        // Map to DTOs
+        List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
+                .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
+                .collect(Collectors.toList());
+
+        playerDTO.setTransferHistories(transferHistoriesDTOs);
+        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        return playerDTO;
+    }
+
+    @Transactional
+    public ResultPaginationDTO fetchAllPlayersWithSortedTransferHistories(Specification<Player> spec, Pageable pageable) {
+        // Using existing pagination functionality
+        Page<Player> pagePlayer = this.playerRepository.findAll(spec, pageable);
+        ResultPaginationDTO result = setResultPaginationDTO(pageable, pagePlayer, spec);
+
+        // For each player, sort their transfer histories
+        List<ResponsePlayerDTO> list = pagePlayer.getContent().stream()
+                .map(player -> {
+                    ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
+
+                    // Sort transfer histories by date in descending order
+                    List<TransferHistory> sortedTransferHistories = player.getTransferHistories().stream()
+                            .sorted(Comparator.comparing(TransferHistory::getDate).reversed())
+                            .toList();
+
+                    // Map to DTOs
+                    List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
+                            .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
+                            .collect(Collectors.toList());
+
+                    playerDTO.setTransferHistories(transferHistoriesDTOs);
+                    playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+                    return playerDTO;
+                })
+                .collect(Collectors.toList());
+
+        result.setResult(list);
+        return result;
+    }
+    public ResultPaginationDTO setResultPaginationDTO (Pageable pageable, Page<Player>pagePlayer, Specification<Player> spec) {
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+        meta.setPages(pagePlayer.getTotalPages());
+        meta.setTotal(pagePlayer.getTotalElements());
+        result.setMeta(meta);
+        return result;
+    }
+    public static int calculateAge(LocalDate dob) {
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate the period between the two dates
+        Period period = Period.between(dob, currentDate);
+        return period.getYears(); // Get the number of years
+    }
 }
