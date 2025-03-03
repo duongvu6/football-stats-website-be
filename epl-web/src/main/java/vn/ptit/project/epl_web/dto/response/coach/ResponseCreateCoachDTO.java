@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
+
 @Getter
 @Setter
 public class ResponseCreateCoachDTO {
@@ -12,5 +13,5 @@ public class ResponseCreateCoachDTO {
     private String name;
     private int age;
     private LocalDateTime dob;
-    private Set<String> citizenships;
+    private List<String> citizenships;
 }

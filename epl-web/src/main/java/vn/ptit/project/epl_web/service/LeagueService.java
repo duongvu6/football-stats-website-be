@@ -3,7 +3,6 @@ package vn.ptit.project.epl_web.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.League;
-import vn.ptit.project.epl_web.domain.LeagueSeason;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
