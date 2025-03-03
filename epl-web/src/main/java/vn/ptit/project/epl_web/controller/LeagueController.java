@@ -12,6 +12,7 @@ import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseUpdateLeagueDTO;
 import vn.ptit.project.epl_web.service.LeagueService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
 @RequestMapping("api/v1/leagues")
@@ -32,8 +33,11 @@ public class LeagueController {
     @PutMapping("")
     @ApiMessage("Update a league")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUpdateLeagueDTO> updateLeague(@Valid @RequestBody RequestUpdateLeagueDTO leagueDTO) {
+    public ResponseEntity<ResponseUpdateLeagueDTO> updateLeague(@Valid @RequestBody RequestUpdateLeagueDTO leagueDTO) throws InvalidRequestException {
         League league=leagueService.findByLeagueId(leagueDTO.getId());
+        if(league==null) {
+            throw new InvalidRequestException("League with id = " + leagueDTO.getId() + " not found.");
+        }
         League updatedLeague=this.leagueService.handleUpdateLeague(league, leagueDTO);
         return ResponseEntity.ok().body(this.leagueService.leagueToResponseUpdateLeagueDTO(updatedLeague));
     }
