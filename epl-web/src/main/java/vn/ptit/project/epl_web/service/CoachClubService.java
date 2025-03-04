@@ -23,7 +23,11 @@ public class CoachClubService {
     public CoachClub findById(Long id) {
         return coachClubRepository.findById(id).orElse(null);
     }
-    public ResponseCreateCoachClubDTO ClubToCreateCoachClubDTO(CoachClub coachClub) {
+    public ResponseCreateCoachClubDTO coachClubToCreateCoachClubDTO(CoachClub coachClub) {
+        ResponseCreateCoachClubDTO responseCreateCoachClubDTO = new ResponseCreateCoachClubDTO();
+        responseCreateCoachClubDTO.setHeadCoach(coachClub.getHeadCoach().getName());
+        responseCreateCoachClubDTO.setClub(coachClub.getClub().getName());
+        return responseCreateCoachClubDTO;
 
     }
 

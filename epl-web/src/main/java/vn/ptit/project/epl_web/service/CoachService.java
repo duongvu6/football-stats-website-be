@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import vn.ptit.project.epl_web.domain.CoachClub;
 import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
@@ -12,7 +13,9 @@ import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
+import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
 import vn.ptit.project.epl_web.repository.CoachRepository;
+import vn.ptit.project.epl_web.util.AgeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +25,12 @@ import java.util.Optional;
 public class CoachService {
     private final CoachRepository coachRepository;
     private final ModelMapper modelMapper;
+    private final CoachClubService coachClubService;
 
-    public CoachService(CoachRepository coachRepository, ModelMapper modelMapper) {
+    public CoachService(CoachRepository coachRepository, ModelMapper modelMapper, CoachClubService coachClubService) {
         this.coachRepository = coachRepository;
         this.modelMapper = modelMapper;
+        this.coachClubService = coachClubService;
     }
 
     public HeadCoach handleCreateCoach(HeadCoach coach) {
@@ -45,16 +50,19 @@ public class CoachService {
     }
 
     public HeadCoach handleUpdateCoach(HeadCoach coach, RequestUpdateCoachDTO coachDTO) {
-//        if (coachDTO.getClubHistory() != null) {
-//            //TO-DO
-//        }
-        //TODO handle dto
-        return null;
-
+        this.modelMapper.map(coachDTO, coach);
+        return this.coachRepository.save(coach);
     }
 
     public ResponseUpdateCoachDTO coachToResponseUpdateCoachDTO(HeadCoach coach) {
-        return this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
+        ResponseUpdateCoachDTO coachDTO= this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
+        List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
+        for (CoachClub coachClub : coach.getCoachClubs()) {
+                coachClubDTOs.add(this.coachClubService.coachClubToCreateCoachClubDTO(coachClub));
+        }
+        coachDTO.setCoachClubs(coachClubDTOs);
+        coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
+        return coachDTO;
     }
 
     public ResultPaginationDTO fetchAllCoaches(Specification<HeadCoach> spec, Pageable pageable) {
@@ -85,6 +93,11 @@ public class CoachService {
     }
     public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
         ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
+        coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
+        List<ResponseCreateCoachClubDTO> responseCoachDTOList = new ArrayList<>();
+        for(CoachClub coachClub : coach.getCoachClubs()) {
+                responseCoachDTOList.add(coachClubService.coachClubToCreateCoachClubDTO(coachClub));
+        }
         return coachDTO;
     }
 }

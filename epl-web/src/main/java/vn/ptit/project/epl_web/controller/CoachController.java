@@ -12,6 +12,7 @@ import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.service.CoachService;
@@ -50,12 +51,12 @@ public class CoachController {
 
     @GetMapping("/{id}")
     @ApiMessage("Fetch a coach")
-    public ResponseEntity<HeadCoach> fetchACoach(@PathVariable Long id) throws InvalidRequestException {
+    public ResponseEntity<ResponseCoachDTO> fetchACoach(@PathVariable Long id) throws InvalidRequestException {
         Optional<HeadCoach> coach = this.coachService.getCoachById(id);
         if (coach.isEmpty()) {
             throw new InvalidRequestException("Coach with id = " + id + " not found");
         }
-        return ResponseEntity.ok(coach.get());
+        return ResponseEntity.ok(coachService.coachToResponseCoachDTO(coach.get()));
     }
     @GetMapping("")
     @ApiMessage("Fetch all coaches")
