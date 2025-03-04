@@ -57,9 +57,12 @@ public class LeagueService {
         meta.setPages(leaguePage.getTotalPages());
         meta.setTotal(leaguePage.getTotalElements());
         result.setMeta(meta);
-        List<ResponseCreateLeagueDTO> list=leaguePage.getContent().stream().map(this::leagueToResponseCreateLeagueDTO).collect(Collectors.toList());
+        List<ResponseUpdateLeagueDTO> list=leaguePage.getContent().stream().map(this::leagueToResponseUpdateLeagueDTO).collect(Collectors.toList());
         result.setResult(list);
         return result;
+    }
+    public void deleteLeague(Long leagueId) {
+        this.leagueRepository.deleteById(leagueId);
     }
 
 

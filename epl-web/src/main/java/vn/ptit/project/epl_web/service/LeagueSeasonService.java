@@ -37,7 +37,7 @@ public class LeagueSeasonService {
    {
         ResponseCreateLeagueSeasonDTO dto=this.modelMapper.map(leagueSeason, ResponseCreateLeagueSeasonDTO.class);
         Long leagueId=leagueSeason.getLeague().getId();
-        dto.setLeagueId(leagueId);
+        dto.setLeague(leagueId);
         return dto;
    }
    public LeagueSeason handleUpdateLeagueSeason(LeagueSeason leagueSeason,RequestUpdateLeagueSeasonDTO dto){

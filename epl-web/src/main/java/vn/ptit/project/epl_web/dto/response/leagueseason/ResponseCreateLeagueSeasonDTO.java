@@ -14,6 +14,6 @@ public class ResponseCreateLeagueSeasonDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Long leagueId;
+    private Long league;
     private List<String> clubSeasonTables;
 }

@@ -30,7 +30,7 @@ public class LeagueController {
     }
 
     @PostMapping("")
-    @ApiMessage("Create new league")
+    @ApiMessage("Crt eate new league")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseCreateLeagueDTO> createNewLeague(@Valid @RequestBody RequestCreateLeagueDTO leagueDTO) {
         League newLeague= leagueService.handleCreateLeague(leagueService.requestLeagueDTOtoLeague(leagueDTO));
@@ -49,16 +49,26 @@ public class LeagueController {
     }
     @GetMapping("/{id}")
     @ApiMessage("Fetch a league")
-    public ResponseEntity<ResponseCreateLeagueDTO> findLeagueById(@PathVariable("id") Long id) throws InvalidRequestException {
+    public ResponseEntity<ResponseUpdateLeagueDTO> findLeagueById(@PathVariable("id") Long id) throws InvalidRequestException {
         League league=this.leagueService.findByLeagueId(id);
         if (league==null) {
             throw new InvalidRequestException("League with id = " + id + " not found");
         }
-        return ResponseEntity.ok().body(leagueService.leagueToResponseCreateLeagueDTO(league));
+        return ResponseEntity.ok().body(leagueService.leagueToResponseUpdateLeagueDTO(league));
     }
     @GetMapping("")
     @ApiMessage("fetch all leagues")
     public ResponseEntity<ResultPaginationDTO> fetchAllLeagues(@Filter Specification<League> spec, Pageable pageable) {
         return ResponseEntity.ok(this.leagueService.fetchAllLeagues(spec,pageable));
+    }
+    @DeleteMapping("{id}")
+    @ApiMessage("Delete a league")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteLeague(@PathVariable("id") Long leagueId) throws InvalidRequestException {
+            if(leagueService.findByLeagueId(leagueId)==null) {
+                throw new InvalidRequestException("League with id = " + leagueId + " not found.");
+            }
+            this.leagueService.deleteLeague(leagueId);
+            return ResponseEntity.ok(null);
     }
 }

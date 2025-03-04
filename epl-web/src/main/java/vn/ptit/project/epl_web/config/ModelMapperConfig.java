@@ -110,7 +110,7 @@ public class ModelMapperConfig {
 
             @Override
             protected void configure() {
-                skip(destination.getLeagueId());
+                skip(destination.getLeague());
             }
         });
         mapper.addMappings(new PropertyMap<RequestUpdateLeagueSeasonDTO, LeagueSeason>() {
