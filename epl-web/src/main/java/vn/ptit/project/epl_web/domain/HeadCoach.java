@@ -14,7 +14,6 @@ public class HeadCoach {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int age;
     private LocalDate dob;
     @ElementCollection
     @CollectionTable(name = "coach_citizenship", joinColumns = @JoinColumn(name = "head_coach_id"))

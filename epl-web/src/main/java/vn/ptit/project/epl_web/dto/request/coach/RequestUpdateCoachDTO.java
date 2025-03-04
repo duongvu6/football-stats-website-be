@@ -15,9 +15,6 @@ public class RequestUpdateCoachDTO {
     private Long id;
     @NotBlank(message = "Name must not be blank")
     private String name;
-    @NotNull(message = "Age must not be null")
-    @Positive(message = "Age must be positive number")
-    private int age;
     @NotNull(message = "Date of birth must not be null")
     private LocalDate dob;
     @NotNull(message = "Citizenship must not be null")

@@ -17,6 +17,7 @@ import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponseUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.PlayerRepository;
+import vn.ptit.project.epl_web.util.AgeUtil;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.time.LocalDate;
@@ -45,12 +46,12 @@ public class PlayerService {
     }
     public ResponseCreatePlayerDTO playerToResponseCreatePlayerDTO(Player player) {
         ResponseCreatePlayerDTO playerDTO = this.mapper.map(player, ResponseCreatePlayerDTO.class);
-        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         return playerDTO;
     }
     public ResponseUpdatePlayerDTO playerToResponseUpdatePlayerDTO(Player player) {
         ResponseUpdatePlayerDTO playerDTO = this.mapper.map(player, ResponseUpdatePlayerDTO.class);
-        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
         return playerDTO;
     }
@@ -92,7 +93,7 @@ public class PlayerService {
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
         playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
-        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         return playerDTO;
     }
     public List<ResponseCreateTransferHistoryDTO> mapTransferHistoryFromPlayer(Player player) {
@@ -132,7 +133,7 @@ public class PlayerService {
                 .collect(Collectors.toList());
 
         playerDTO.setTransferHistories(transferHistoriesDTOs);
-        playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+        playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         return playerDTO;
     }
 
@@ -158,7 +159,7 @@ public class PlayerService {
                             .collect(Collectors.toList());
 
                     playerDTO.setTransferHistories(transferHistoriesDTOs);
-                    playerDTO.setAge(PlayerService.calculateAge(player.getDob()));
+                    playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
                     return playerDTO;
                 })
                 .collect(Collectors.toList());
@@ -176,11 +177,5 @@ public class PlayerService {
         result.setMeta(meta);
         return result;
     }
-    public static int calculateAge(LocalDate dob) {
-        LocalDate currentDate = LocalDate.now();
 
-        // Calculate the period between the two dates
-        Period period = Period.between(dob, currentDate);
-        return period.getYears(); // Get the number of years
-    }
 }
