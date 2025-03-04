@@ -57,7 +57,8 @@ public class CoachService {
     public ResponseUpdateCoachDTO coachToResponseUpdateCoachDTO(HeadCoach coach) {
         ResponseUpdateCoachDTO coachDTO= this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
         List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
-        for (CoachClub coachClub : coach.getCoachClubs()) {
+        List<CoachClub> coachClubs = coach.getCoachClubs();
+        for (CoachClub coachClub : coachClubs) {
                 coachClubDTOs.add(this.coachClubService.coachClubToCreateCoachClubDTO(coachClub));
         }
         coachDTO.setCoachClubs(coachClubDTOs);
@@ -94,10 +95,12 @@ public class CoachService {
     public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
         ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
         coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
-        List<ResponseCreateCoachClubDTO> responseCoachDTOList = new ArrayList<>();
-        for(CoachClub coachClub : coach.getCoachClubs()) {
-                responseCoachDTOList.add(coachClubService.coachClubToCreateCoachClubDTO(coachClub));
+        List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
+        List<CoachClub> coachClubs = coach.getCoachClubs();
+        for(CoachClub coachClub : coachClubs) {
+            coachClubDTOs.add(coachClubService.coachClubToCreateCoachClubDTO(coachClub));
         }
+        coachDTO.setCoachClubs(coachClubDTOs);
         return coachDTO;
     }
 }

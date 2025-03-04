@@ -15,6 +15,7 @@ import vn.ptit.project.epl_web.dto.request.transferhistory.RequestUpdateTransfer
 import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
+import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
@@ -143,7 +144,13 @@ public class ModelMapperConfig {
                 skip(destination.getCoachClubs());
             }
         });
-
+        mapper.addMappings(new PropertyMap<CoachClub, ResponseCreateCoachClubDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getHeadCoach());
+                skip(destination.getClub());
+            }
+        });
 
         return mapper;
     }

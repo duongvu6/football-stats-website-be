@@ -24,7 +24,7 @@ public class CoachClubService {
         return coachClubRepository.findById(id).orElse(null);
     }
     public ResponseCreateCoachClubDTO coachClubToCreateCoachClubDTO(CoachClub coachClub) {
-        ResponseCreateCoachClubDTO responseCreateCoachClubDTO = new ResponseCreateCoachClubDTO();
+        ResponseCreateCoachClubDTO responseCreateCoachClubDTO = this.mapper.map(coachClub, ResponseCreateCoachClubDTO.class);
         responseCreateCoachClubDTO.setHeadCoach(coachClub.getHeadCoach().getName());
         responseCreateCoachClubDTO.setClub(coachClub.getClub().getName());
         return responseCreateCoachClubDTO;
