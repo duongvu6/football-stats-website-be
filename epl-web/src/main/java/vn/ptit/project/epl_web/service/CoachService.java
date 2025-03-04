@@ -9,6 +9,7 @@ import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.repository.CoachRepository;
@@ -16,7 +17,6 @@ import vn.ptit.project.epl_web.repository.CoachRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CoachService {
@@ -82,5 +82,9 @@ public class CoachService {
 
 
         this.coachRepository.deleteById(id);
+    }
+    public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
+        ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
+        return coachDTO;
     }
 }
