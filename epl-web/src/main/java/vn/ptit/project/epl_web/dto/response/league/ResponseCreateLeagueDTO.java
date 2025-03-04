@@ -2,6 +2,8 @@ package vn.ptit.project.epl_web.dto.response.league;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
+
 import java.util.List;
 
 @Getter
@@ -9,6 +11,6 @@ import java.util.List;
 public class ResponseCreateLeagueDTO {
     private Long id;
     private String name;
-    private List<String> leagueSeasons;
+    private List<ResponseCreateLeagueSeasonDTO> leagueSeasons;
 
 }
