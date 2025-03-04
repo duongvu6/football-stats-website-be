@@ -20,7 +20,6 @@ import vn.ptit.project.epl_web.repository.PlayerRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
