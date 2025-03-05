@@ -127,6 +127,7 @@ public class CoachService {
                 .toList();
 
         coachDTO.setCoachClubs(coachClubDTOs);
+        coachDTO.setAge(AgeUtil.calculateAge(coach.getDob()));
         return coachDTO;
     }
 }
