@@ -69,7 +69,7 @@ public class CoachController {
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a coach")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Void> deleteACoach(@PathVariable Long id ) {
+    public ResponseEntity<Void> deleteACoach(@PathVariable Long id ) throws InvalidRequestException {
         this.coachService.handleDeleteCoach(id);
         return ResponseEntity.ok(null);
     }

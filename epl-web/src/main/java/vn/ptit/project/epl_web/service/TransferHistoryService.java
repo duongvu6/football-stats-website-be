@@ -33,7 +33,7 @@ public class TransferHistoryService {
         this.playerRepository = playerRepository;
         this.clubRepository = clubRepository;
     }
-    public void createTransferHistory(RequestCreateTransferHistoryDTO dto) throws InvalidRequestException {
+    public TransferHistory createTransferHistory(RequestCreateTransferHistoryDTO dto) throws InvalidRequestException {
         String transferType = dto.getType();
         if (transferType.equals("Free Transfer") || transferType.equals("End of loan") || transferType.equals("Youth Promote")) {
             dto.setFee(0f);
@@ -42,7 +42,7 @@ public class TransferHistoryService {
 //        Optional<Player> player = this.playerRepository.findById(dto.getPlayer());
 //        player.ifPresent(playerValue -> th.setPlayerValue(playerValue.getMarketValue()));
 
-        this.repository.save(th);
+        return this.repository.save(th);
     }
     public ResponseCreateTransferHistoryDTO transferHistoryToResponseCreateTransferHistoryDTO(TransferHistory th) {
         ResponseCreateTransferHistoryDTO dto = this.mapper.map(th, ResponseCreateTransferHistoryDTO.class);

@@ -26,6 +26,13 @@ public class TransferController {
         return ResponseEntity.ok(this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(this.transferHistoryService.handleUpdateTransferHistory(this.transferHistoryService.requestUpdateTransferHistoryDTOtoTransferHistory(thDTO))));
     }
 
+    @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ApiMessage("Create Transfer History")
+    public ResponseEntity<ResponseCreateTransferHistoryDTO> createTransferHistory(@RequestBody RequestCreateTransferHistoryDTO thDTO) throws InvalidRequestException {
+        return ResponseEntity.ok(this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(this.transferHistoryService.createTransferHistory(thDTO)));
+    }
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

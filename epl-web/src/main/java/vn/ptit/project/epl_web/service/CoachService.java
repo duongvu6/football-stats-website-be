@@ -16,6 +16,7 @@ import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
 import vn.ptit.project.epl_web.repository.CoachRepository;
 import vn.ptit.project.epl_web.util.AgeUtil;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,9 @@ public class CoachService {
     }
 
     public ResponseCreateCoachDTO coachToResponseCreateCoachDTO(HeadCoach coach) {
-        return this.modelMapper.map(coach, ResponseCreateCoachDTO.class);
+        ResponseCreateCoachDTO coachDTO =  this.modelMapper.map(coach, ResponseCreateCoachDTO.class);
+        coachDTO.setAge(AgeUtil.calculateAge(coach.getDob()));
+        return coachDTO;
     }
 
     public Optional<HeadCoach> getCoachById(Long id) {
@@ -75,22 +78,24 @@ public class CoachService {
         meta.setPages(coachPage.getTotalPages());
         meta.setTotal(coachPage.getTotalElements());
         result.setMeta(meta);
-        List<HeadCoach> list = new ArrayList<>(coachPage.getContent());
+        List<ResponseCoachDTO> list = coachPage.getContent().stream().map(this::coachToResponseCoachDTO).toList();
         result.setResult(list);
         return result;
     }
 
-    public void handleDeleteCoach(Long id) {
+    public void handleDeleteCoach(Long id) throws InvalidRequestException {
         Optional<HeadCoach> coach = this.coachRepository.findById(id);
         if (coach.isPresent()) {
             HeadCoach deletedCoach = coach.get();
             //delete all club related
-            //TODO handle delete all related
-
+            for (CoachClub coachClub : deletedCoach.getCoachClubs()) {
+                this.coachClubService.handleDeleteCoachClub(coachClub);
+            }
+            this.coachRepository.deleteById(id);
+        } else {
+            throw new InvalidRequestException("Head Coach with id = " + id  + " not found.");
         }
 
-
-        this.coachRepository.deleteById(id);
     }
     public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
         ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);

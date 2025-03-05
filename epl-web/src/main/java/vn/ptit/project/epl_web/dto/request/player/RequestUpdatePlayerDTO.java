@@ -31,5 +31,4 @@ public class RequestUpdatePlayerDTO {
     private List<String> citizenships;
     @NotNull(message = "Positions must not be null")
     private List<String> positions;
-    private List<RequestCreateTransferHistoryDTO> transferHistories;
 }

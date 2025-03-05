@@ -7,6 +7,9 @@ import vn.ptit.project.epl_web.domain.CoachClub;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
 import vn.ptit.project.epl_web.repository.CoachClubRepository;
 import vn.ptit.project.epl_web.repository.CoachRepository;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
+
+import java.util.Optional;
 
 @Service
 public class CoachClubService {
@@ -30,6 +33,21 @@ public class CoachClubService {
         return responseCreateCoachClubDTO;
 
     }
+    public void handleDeleteCoachClubWithId(Long id) throws InvalidRequestException {
+        Optional<CoachClub> coachClub = this.coachClubRepository.findById(id);
+        if (coachClub.isEmpty()) {
+            throw new InvalidRequestException("Coach club with id = " + id + " not found. ");
+        }
+        CoachClub deletedCoachClub = coachClub.get();
+        this.handleDeleteCoachClub(deletedCoachClub);
+    }
+    public void handleDeleteCoachClub(CoachClub deletedCoachClub) {
+        deletedCoachClub.setClub(null);
+        deletedCoachClub.setHeadCoach(null);
+        this.coachClubRepository.delete(deletedCoachClub);
+    }
+
+
 
     
     

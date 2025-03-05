@@ -57,20 +57,6 @@ public class PlayerService {
     }
     public Player handleUpdatePlayer(Player player, RequestUpdatePlayerDTO playerDTO) throws InvalidRequestException {
         this.mapper.map(playerDTO, player);
-        //handle transfer history
-        if (playerDTO.getTransferHistories() != null) {
-            //TODO: implement transfer history created and query to db
-            // lấy transferhistory dto từ cầu thủ (là thuộc tính cua cau thu)
-            List<RequestCreateTransferHistoryDTO> transferHistories = new ArrayList<>(playerDTO.getTransferHistories());
-            // tao moi list cua transferhistory tao ra
-            //List<TransferHistory> createdTransferHistories = new ArrayList<>();
-            // tao transferhistory
-            for (RequestCreateTransferHistoryDTO dto : transferHistories) {
-                this.transferHistoryService.createTransferHistory(dto);
-            }
-//            player.setTransferHistories(new HashSet<>(createdTransferHistories));
-        }
-//        System.out.println(player);
         return this.playerRepository.save(player);
     }
     @Transactional
