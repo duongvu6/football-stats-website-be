@@ -15,7 +15,6 @@ import java.util.Set;
 public class RequestCreateCoachDTO {
     @NotBlank(message = "Name must not be blank")
     private String name;
-    @NotNull(message = "Age must not be null")
     @NotNull(message = "Date of birth must not be null")
     private LocalDate dob;
     @NotNull(message = "Citizenship must not be null")
