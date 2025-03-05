@@ -20,6 +20,7 @@ import vn.ptit.project.epl_web.util.AgeUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoachService {
@@ -42,7 +43,9 @@ public class CoachService {
     }
 
     public ResponseCreateCoachDTO coachToResponseCreateCoachDTO(HeadCoach coach) {
-        return this.modelMapper.map(coach, ResponseCreateCoachDTO.class);
+        ResponseCreateCoachDTO dto=this.modelMapper.map(coach, ResponseCreateCoachDTO.class);
+        dto.setAge(AgeUtil.calculateAge(coach.getDob()));
+        return dto;
     }
 
     public Optional<HeadCoach> getCoachById(Long id) {
@@ -75,7 +78,7 @@ public class CoachService {
         meta.setPages(coachPage.getTotalPages());
         meta.setTotal(coachPage.getTotalElements());
         result.setMeta(meta);
-        List<HeadCoach> list = new ArrayList<>(coachPage.getContent());
+        List<ResponseUpdateCoachDTO> list = coachPage.getContent().stream().map(this::coachToResponseUpdateCoachDTO).collect(Collectors.toList());
         result.setResult(list);
         return result;
     }
