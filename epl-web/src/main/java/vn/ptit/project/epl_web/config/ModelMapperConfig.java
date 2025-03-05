@@ -5,6 +5,8 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.ptit.project.epl_web.domain.*;
+import vn.ptit.project.epl_web.dto.request.coachclub.RequestCreateCoachClubDTO;
+import vn.ptit.project.epl_web.dto.request.coachclub.RequestUpdateCoachClubDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestCreateLeagueSeasonDTO;
@@ -14,7 +16,7 @@ import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransfer
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestUpdateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
-import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
+import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
@@ -143,13 +145,34 @@ public class ModelMapperConfig {
                 skip(destination.getCoachClubs());
             }
         });
-        mapper.addMappings(new PropertyMap<CoachClub, ResponseCreateCoachClubDTO>() {
+        mapper.addMappings(new PropertyMap<CoachClub, ResponseCoachClubDTO>() {
             @Override
             protected void configure() {
                 skip(destination.getHeadCoach());
                 skip(destination.getClub());
             }
         });
+        mapper.addMappings(new PropertyMap<RequestCreateCoachClubDTO, CoachClub>() {
+            @Override
+            protected void configure() {
+                skip(destination.getHeadCoach());
+                skip(destination.getClub());
+            }
+        });
+        mapper.addMappings(new PropertyMap<RequestUpdateCoachClubDTO, CoachClub>() {
+            @Override
+            protected void configure() {
+                skip(destination.getHeadCoach());
+                skip(destination.getClub());
+            }
+        });
+//        mapper.addMappings(new PropertyMap<CoachClub, ResponseCoachClubDTO>() {
+//            @Override
+//            protected void configure() {
+//                skip(destination.getHeadCoach());
+//                skip(destination.getClub());
+//            }
+//        });
 
         return mapper;
     }

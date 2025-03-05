@@ -7,19 +7,26 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.CoachClub;
 import vn.ptit.project.epl_web.domain.HeadCoach;
+import vn.ptit.project.epl_web.domain.Player;
+import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
-import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
+import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.CoachRepository;
 import vn.ptit.project.epl_web.util.AgeUtil;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoachService {
@@ -58,12 +65,12 @@ public class CoachService {
 
     public ResponseUpdateCoachDTO coachToResponseUpdateCoachDTO(HeadCoach coach) {
         ResponseUpdateCoachDTO coachDTO= this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
-        List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
+        List<ResponseCoachClubDTO> responseCoachClubDTOS = new ArrayList<>();
         List<CoachClub> coachClubs = coach.getCoachClubs();
         for (CoachClub coachClub : coachClubs) {
-                coachClubDTOs.add(this.coachClubService.coachClubToCreateCoachClubDTO(coachClub));
+                responseCoachClubDTOS.add(this.coachClubService.coachClubToResponseCoachClubDTO(coachClub));
         }
-        coachDTO.setCoachClubs(coachClubDTOs);
+        coachDTO.setCoachClubs(responseCoachClubDTOS);
         coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
         return coachDTO;
     }
@@ -96,14 +103,29 @@ public class CoachService {
         }
 
     }
-    public ResponseUpdateCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
-        ResponseUpdateCoachDTO coachDTO = this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
+    public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
+        ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
         coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
-        List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
+        List<ResponseCoachClubDTO> responseCoachClubDTOS = new ArrayList<>();
         List<CoachClub> coachClubs = coach.getCoachClubs();
         for(CoachClub coachClub : coachClubs) {
-            coachClubDTOs.add(coachClubService.coachClubToCreateCoachClubDTO(coachClub));
+            responseCoachClubDTOS.add(coachClubService.coachClubToResponseCoachClubDTO(coachClub));
         }
+        coachDTO.setCoachClubs(responseCoachClubDTOS);
+        return coachDTO;
+    }
+    public ResponseCoachDTO coachToResponseCoachWithSortedTransferHistory(HeadCoach coach) throws InvalidRequestException {
+        ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
+
+        List<CoachClub> sortedCoachClubs = coach.getCoachClubs().stream()
+                .sorted(Comparator.comparing(CoachClub::getStartDate).reversed())
+                .toList();
+
+        // Map to DTOs
+        List<ResponseCoachClubDTO> coachClubDTOs = sortedCoachClubs.stream()
+                .map(this.coachClubService::coachClubToResponseCoachClubDTO)
+                .toList();
+
         coachDTO.setCoachClubs(coachClubDTOs);
         return coachDTO;
     }

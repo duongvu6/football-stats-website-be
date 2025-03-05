@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseCreateCoachClubDTO {
+public class ResponseCoachClubDTO {
     private Long id;
     private String headCoach;
     private String club;

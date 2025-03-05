@@ -16,7 +16,7 @@ public class CoachClub {
     @JoinColumn(name="head_coach_id")
     private HeadCoach headCoach;
     @ManyToOne
-    @JoinColumn(name="club_id")
+    @JoinColumn(name="club_id", nullable = true)
     private Club club;
     private LocalDate startDate;
     private LocalDate endDate;
