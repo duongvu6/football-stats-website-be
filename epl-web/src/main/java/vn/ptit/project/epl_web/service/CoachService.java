@@ -10,7 +10,6 @@ import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
-import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCreateCoachClubDTO;
@@ -78,7 +77,7 @@ public class CoachService {
         meta.setPages(coachPage.getTotalPages());
         meta.setTotal(coachPage.getTotalElements());
         result.setMeta(meta);
-        List<ResponseCoachDTO> list = coachPage.getContent().stream().map(this::coachToResponseCoachDTO).toList();
+        List<ResponseUpdateCoachDTO> list = coachPage.getContent().stream().map(this::coachToResponseUpdateCoachDTO).toList();
         result.setResult(list);
         return result;
     }
@@ -97,8 +96,8 @@ public class CoachService {
         }
 
     }
-    public ResponseCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
-        ResponseCoachDTO coachDTO = this.modelMapper.map(coach, ResponseCoachDTO.class);
+    public ResponseUpdateCoachDTO coachToResponseCoachDTO(HeadCoach coach) {
+        ResponseUpdateCoachDTO coachDTO = this.modelMapper.map(coach, ResponseUpdateCoachDTO.class);
         coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
         List<ResponseCreateCoachClubDTO> coachClubDTOs = new ArrayList<>();
         List<CoachClub> coachClubs = coach.getCoachClubs();

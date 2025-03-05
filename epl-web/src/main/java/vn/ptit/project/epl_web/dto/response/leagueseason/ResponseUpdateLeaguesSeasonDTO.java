@@ -18,5 +18,5 @@ public class ResponseUpdateLeaguesSeasonDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private Long leagueId;
-    private List<String> clubSeasonTables;
+    private List<ClubSeasonTablesDTO> clubSeasonTables;
 }
