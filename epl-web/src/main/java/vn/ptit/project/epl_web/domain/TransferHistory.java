@@ -20,7 +20,7 @@ public class TransferHistory {
     @JoinColumn(name = "player_id")
     private Player player;
     @ManyToOne
-    @JoinColumn(name="club_id")
+    @JoinColumn(name="club_id", nullable = true)
     private Club club;
 
 

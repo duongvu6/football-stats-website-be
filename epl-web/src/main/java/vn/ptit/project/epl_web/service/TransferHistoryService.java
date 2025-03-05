@@ -35,19 +35,21 @@ public class TransferHistoryService {
     }
     public TransferHistory createTransferHistory(RequestCreateTransferHistoryDTO dto) throws InvalidRequestException {
         String transferType = dto.getType();
-        if (transferType.equals("Free Transfer") || transferType.equals("End of loan") || transferType.equals("Youth Promote")) {
+        if (transferType.equals("Free Transfer") || transferType.equals("End of loan") ||
+                transferType.equals("Youth Promote") || transferType.equals("End of contract")) {
             dto.setFee(0f);
         }
         TransferHistory th = this.requestCreateTransferHistoryDTOtoTransferHistory(dto);
-//        Optional<Player> player = this.playerRepository.findById(dto.getPlayer());
-//        player.ifPresent(playerValue -> th.setPlayerValue(playerValue.getMarketValue()));
-
         return this.repository.save(th);
     }
     public ResponseCreateTransferHistoryDTO transferHistoryToResponseCreateTransferHistoryDTO(TransferHistory th) {
         ResponseCreateTransferHistoryDTO dto = this.mapper.map(th, ResponseCreateTransferHistoryDTO.class);
         dto.setPlayer(th.getPlayer().getName());
-        dto.setClub(th.getClub().getName());
+        if (th.getClub() != null) {
+            dto.setClub(th.getClub().getName());
+        } else {
+            dto.setClub("Without club");
+        }
         return dto;
     }
     public TransferHistory requestCreateTransferHistoryDTOtoTransferHistory(RequestCreateTransferHistoryDTO thDTO) throws InvalidRequestException {
@@ -55,7 +57,11 @@ public class TransferHistoryService {
         Long playerId = thDTO.getPlayer();
         Long clubId = thDTO.getClub();
         Optional<Player> player = this.playerRepository.findById(playerId);
-        Optional<Club> club = this.clubRepository.findById(clubId);
+        Optional<Club> club = Optional.empty();
+        if (clubId != null) {
+            club = this.clubRepository.findById(clubId);
+        }
+//        Optional<Club> club = this.clubRepository.findById(clubId);
         return this.mapPlayerAndClub(player, club, transferHistory, playerId, clubId);
     }
     public TransferHistory mapPlayerAndClub(Optional<Player> player, Optional<Club> club, TransferHistory transferHistory, Long playerId, Long clubId) throws InvalidRequestException {
@@ -64,11 +70,18 @@ public class TransferHistoryService {
         } else {
             throw new InvalidRequestException("Player with id = " + playerId + " not found.");
         }
-        if (club.isPresent()) {
+        String transferType = transferHistory.getType();
+        boolean isSpecialTransfer = "End of contract".equals(transferType) ||
+                "Retired".equals(transferType) ||
+                "Contract terminated".equals(transferType);
+        if (clubId == null && isSpecialTransfer ) {
+            transferHistory.setClub(null);
+        } else if (club.isPresent()) {
             transferHistory.setClub(club.get());
         } else {
-            throw new InvalidRequestException("Club with id = " + clubId + " not found.");
-        }
+        throw new InvalidRequestException("Club with id = " + clubId + " not found.");
+    }
+
         return transferHistory;
     }
     public TransferHistory requestUpdateTransferHistoryDTOtoTransferHistory(RequestUpdateTransferHistoryDTO thDTO) throws InvalidRequestException {
@@ -77,7 +90,10 @@ public class TransferHistoryService {
         Long playerId = thDTO.getPlayer();
         Long clubId = thDTO.getClub();
         Optional<Player> player = this.playerRepository.findById(playerId);
-        Optional<Club> club = this.clubRepository.findById(clubId);
+        Optional<Club> club = Optional.empty();
+        if (clubId != null) {
+            club = this.clubRepository.findById(clubId);
+        }
         return this.mapPlayerAndClub(player, club, transferHistory, playerId, clubId);
     }
     public TransferHistory handleUpdateTransferHistory(TransferHistory th) {
