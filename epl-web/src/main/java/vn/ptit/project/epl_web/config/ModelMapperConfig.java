@@ -5,6 +5,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.ptit.project.epl_web.domain.*;
+import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.request.coachclub.RequestCreateCoachClubDTO;
 import vn.ptit.project.epl_web.dto.request.coachclub.RequestUpdateCoachClubDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
@@ -18,6 +19,7 @@ import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
+import vn.ptit.project.epl_web.dto.response.leagueseason.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
@@ -164,6 +166,15 @@ public class ModelMapperConfig {
             protected void configure() {
                 skip(destination.getHeadCoach());
                 skip(destination.getClub());
+            }
+        });
+        mapper.addMappings(new PropertyMap<RequestCreateClubSeasonTableDTO, ClubSeasonTable>() {
+
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+//                skip(destination.getClub());
+//                skip(destination.getSeason());
             }
         });
 //        mapper.addMappings(new PropertyMap<CoachClub, ResponseCoachClubDTO>() {
