@@ -2,26 +2,30 @@ package vn.ptit.project.epl_web.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name="matches")
 public class Match {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne
     @JoinColumn(name="host_id")
-    @Id
     private Club host;
     @ManyToOne
     @JoinColumn(name="away_id")
-    @Id
     private Club away;
     @ManyToOne
     @JoinColumn(name="season_id")
-    @Id
     private LeagueSeason season;
     //MatchAction
 //    @OneToMany(mappedBy = "hostTeam")
