@@ -13,6 +13,8 @@ import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestUpdateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.request.match.RequestCreateMatchDTO;
+import vn.ptit.project.epl_web.dto.request.match.RequestUpdateMatchDTO;
+import vn.ptit.project.epl_web.dto.request.matchaction.RequestCreateMatchActionDTO;
 import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestUpdateTransferHistoryDTO;
@@ -179,6 +181,12 @@ public class ModelMapperConfig {
             }
         });
         mapper.addMappings(new PropertyMap<RequestCreateMatchDTO, Match>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        });
+        mapper.addMappings(new PropertyMap<RequestCreateMatchActionDTO, MatchAction>() {
             @Override
             protected void configure() {
                 skip(destination.getId());
