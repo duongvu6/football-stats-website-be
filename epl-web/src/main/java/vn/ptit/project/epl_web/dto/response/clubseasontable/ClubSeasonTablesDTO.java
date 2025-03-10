@@ -1,9 +1,7 @@
-package vn.ptit.project.epl_web.dto.response.leagueseason;
+package vn.ptit.project.epl_web.dto.response.clubseasontable;
 
 import lombok.Getter;
 import lombok.Setter;
-import vn.ptit.project.epl_web.domain.Club;
-import vn.ptit.project.epl_web.domain.LeagueSeason;
 
 @Setter
 @Getter

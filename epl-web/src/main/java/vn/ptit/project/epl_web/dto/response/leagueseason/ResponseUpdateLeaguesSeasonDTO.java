@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 
 import java.time.LocalDate;
 import java.util.List;

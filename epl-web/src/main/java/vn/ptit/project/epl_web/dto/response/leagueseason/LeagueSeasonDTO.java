@@ -1,4 +1,4 @@
-package vn.ptit.project.epl_web.dto.response.league;
+package vn.ptit.project.epl_web.dto.response.leagueseason;
 
 import lombok.Getter;
 import lombok.Setter;

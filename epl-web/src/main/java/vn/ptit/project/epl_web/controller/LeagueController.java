@@ -30,7 +30,7 @@ public class LeagueController {
     }
 
     @PostMapping("")
-    @ApiMessage("Crt eate new league")
+    @ApiMessage("Create new league")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseCreateLeagueDTO> createNewLeague(@Valid @RequestBody RequestCreateLeagueDTO leagueDTO) {
         League newLeague= leagueService.handleCreateLeague(leagueService.requestLeagueDTOtoLeague(leagueDTO));

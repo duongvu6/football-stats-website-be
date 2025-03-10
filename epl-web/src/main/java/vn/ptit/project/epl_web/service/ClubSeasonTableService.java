@@ -7,7 +7,7 @@ import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateCstDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSeasonTableDTO;
-import vn.ptit.project.epl_web.dto.response.leagueseason.ClubSeasonTablesDTO;
+import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.repository.ClubSeasonTableRepository;
 
 @Service

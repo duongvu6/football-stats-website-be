@@ -12,7 +12,7 @@ import vn.ptit.project.epl_web.domain.LeagueSeason;
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestUpdateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
-import vn.ptit.project.epl_web.dto.response.leagueseason.ClubSeasonTablesDTO;
+import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
 import vn.ptit.project.epl_web.repository.LeagueSeasonRepository;
