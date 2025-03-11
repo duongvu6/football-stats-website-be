@@ -39,7 +39,7 @@ public class LeagueSeasonService {
    }
    public LeagueSeason requestDTOtoLeagueSeason(RequestCreateLeagueSeasonDTO dto){
         LeagueSeason leagueSeason=modelMapper.map(dto, LeagueSeason.class);
-        League league=leagueService.findByLeagueId(dto.getLeagueId());
+        League league=leagueService.findByLeagueId(dto.getLeague());
         leagueSeason.setLeague(league);
         return leagueSeason;
    }
@@ -56,7 +56,7 @@ public class LeagueSeasonService {
    }
    public LeagueSeason handleUpdateLeagueSeason(LeagueSeason leagueSeason,RequestUpdateLeagueSeasonDTO dto){
          modelMapper.map(dto, leagueSeason);
-         League league=leagueService.findByLeagueId(dto.getLeagueId());
+         League league=leagueService.findByLeagueId(dto.getLeague());
          leagueSeason.setLeague(league);
          return this.leagueSeasonRepository.save(leagueSeason);
 

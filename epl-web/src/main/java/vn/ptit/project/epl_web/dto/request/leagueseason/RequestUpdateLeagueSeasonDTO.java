@@ -16,5 +16,5 @@ public class RequestUpdateLeagueSeasonDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Long leagueId;
+    private Long league;
 }

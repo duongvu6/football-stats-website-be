@@ -17,6 +17,6 @@ public class RequestCreateLeagueSeasonDTO {
     @NotNull
     private LocalDate endDate;
     @NotNull
-    private Long leagueId;
+    private Long league;
 
 }

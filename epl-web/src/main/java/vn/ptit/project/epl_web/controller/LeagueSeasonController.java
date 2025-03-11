@@ -21,7 +21,7 @@ import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
-@RequestMapping("api/v1/leagueseasons")
+@RequestMapping("api/v1/league-seasons")
 public class LeagueSeasonController {
     private final LeagueSeasonService leagueSeasonService;
 
@@ -31,14 +31,14 @@ public class LeagueSeasonController {
     @PostMapping("")
     @ApiMessage("Create new season")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateLeagueSeasonDTO> createLeagueSeason(RequestCreateLeagueSeasonDTO dto){
+    public ResponseEntity<ResponseCreateLeagueSeasonDTO> createLeagueSeason(@RequestBody RequestCreateLeagueSeasonDTO dto){
             LeagueSeason leagueSeason=this.leagueSeasonService.handleCreatLeagueSeason(leagueSeasonService.requestDTOtoLeagueSeason(dto));
             return ResponseEntity.status(HttpStatus.CREATED).body(this.leagueSeasonService.leagueSeasontoDTO(leagueSeason));
     }
     @PutMapping("")
     @ApiMessage("Update a season")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUpdateLeaguesSeasonDTO> updateLeagueSeason(RequestUpdateLeagueSeasonDTO dto) throws InvalidRequestException {
+    public ResponseEntity<ResponseUpdateLeaguesSeasonDTO> updateLeagueSeason(@RequestBody RequestUpdateLeagueSeasonDTO dto) throws InvalidRequestException {
             LeagueSeason existLeagueSeason=leagueSeasonService.findByLeagueSeasonId(dto.getId());
             if(existLeagueSeason==null){
                 throw new InvalidRequestException("Season with id = " + dto.getId() + " not found.");
@@ -60,6 +60,7 @@ public class LeagueSeasonController {
     public ResponseEntity<ResultPaginationDTO> fetchAllSeasons(@Filter Specification<LeagueSeason> spec, Pageable pageable) {
             return ResponseEntity.ok(this.leagueSeasonService.fetchAllLeagueSeasons(spec,pageable));
     }
+
     @DeleteMapping("{id}")
     @ApiMessage("Delete a season")
     @PreAuthorize("hasAuthority('ADMIN')")
