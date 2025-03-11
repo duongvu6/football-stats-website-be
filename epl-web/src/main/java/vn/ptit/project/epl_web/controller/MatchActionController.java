@@ -1,6 +1,7 @@
 package vn.ptit.project.epl_web.controller;
 
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,14 @@ public class MatchActionController {
     @PostMapping("")
     @ApiMessage("Create a match action")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateMatchActionDTO> createMatchAction(RequestCreateMatchActionDTO requestCreateMatchActionDTO) throws InvalidRequestException {
+    public ResponseEntity<ResponseCreateMatchActionDTO> createMatchAction(@Valid @RequestBody RequestCreateMatchActionDTO requestCreateMatchActionDTO) throws InvalidRequestException {
         MatchAction matchAction=matchActionService.handleCreateMatchAction(matchActionService.RequestCreateMatchActionDTOtoMatchAction(requestCreateMatchActionDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(matchActionService.matchActionToResponseCreateMatchActionDTO(matchAction));
     }
     @PutMapping("")
     @ApiMessage("Update a match action")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUpdateMatchActionDTO> updateMatchAction(RequestUpdateMatchActionDTO requestUpdateMatchActionDTO) throws InvalidRequestException {
+    public ResponseEntity<ResponseUpdateMatchActionDTO> updateMatchAction(@RequestBody  RequestUpdateMatchActionDTO requestUpdateMatchActionDTO) throws InvalidRequestException {
         MatchAction matchAction=matchActionService.handleUpdateMatchAction(requestUpdateMatchActionDTO);
         return ResponseEntity.ok(matchActionService.matchActionToResponseUpdateMatchActionDTO(matchAction));
     }

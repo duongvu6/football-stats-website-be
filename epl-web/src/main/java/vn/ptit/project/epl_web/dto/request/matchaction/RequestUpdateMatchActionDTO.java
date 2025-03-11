@@ -14,7 +14,7 @@ public class RequestUpdateMatchActionDTO {
     @NotNull
     private int minute;
     @NotNull
-    private Long matchId;
+    private Long match;
     @NotNull
-    private Long playerId;
+    private Long player;
 }

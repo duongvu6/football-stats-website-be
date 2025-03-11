@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 public class ResponseCreateMatchDTO {
     private Long id;
-    private Long hostId;
-    private Long awayId;
-    private Long seasonId;
+    private Long host;
+    private Long away;
+    private Long season;
     private int round,awayScore,hostScore;
     private LocalDateTime date;
 }

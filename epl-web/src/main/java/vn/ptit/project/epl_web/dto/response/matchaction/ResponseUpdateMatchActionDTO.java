@@ -9,6 +9,6 @@ public class ResponseUpdateMatchActionDTO {
     private Long id;
     private String action;
     private int minute;
-    private Long matchId;
-    private Long playerId;
+    private Long match;
+    private Long player;
 }

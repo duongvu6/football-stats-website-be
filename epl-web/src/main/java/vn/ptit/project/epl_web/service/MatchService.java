@@ -38,9 +38,9 @@ public class MatchService {
 
     public Match requestCreateMatchDTOtoMatch(RequestCreateMatchDTO requestCreateMatchDTO) {
         Match match = modelMapper.map(requestCreateMatchDTO, Match.class);
-        match.setHost(clubService.getClubById(requestCreateMatchDTO.getHostId()).get());
-        match.setAway(clubService.getClubById(requestCreateMatchDTO.getAwayId()).get());
-        match.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateMatchDTO.getSeasonId()));
+        match.setHost(clubService.getClubById(requestCreateMatchDTO.getHost()).get());
+        match.setAway(clubService.getClubById(requestCreateMatchDTO.getAway()).get());
+        match.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateMatchDTO.getSeason()));
         return match;
     }
     public Match handleCreateMatch(Match match) {
@@ -48,9 +48,9 @@ public class MatchService {
     }
     public ResponseCreateMatchDTO matchToResponseCreateMatchDTO(Match match) {
         ResponseCreateMatchDTO responseCreateMatchDTO = modelMapper.map(match, ResponseCreateMatchDTO.class);
-        responseCreateMatchDTO.setHostId(match.getHost().getId());
-        responseCreateMatchDTO.setAwayId(match.getAway().getId());
-        responseCreateMatchDTO.setSeasonId(match.getSeason().getId());
+        responseCreateMatchDTO.setHost(match.getHost().getId());
+        responseCreateMatchDTO.setAway(match.getAway().getId());
+        responseCreateMatchDTO.setSeason(match.getSeason().getId());
         return responseCreateMatchDTO;
     }
     public Match handleUpdateMatch(RequestUpdateMatchDTO updateMatchDTO) {
@@ -63,7 +63,7 @@ public class MatchService {
         for(MatchAction x: match.getMatchActions()) {
             matchActionDTOList.add(matchActionService.MatchActionToMatchActionDTO(x));
         }
-        responseUpdateMatchDTO.setMatchActionDTOS(matchActionDTOList);
+        responseUpdateMatchDTO.setMatchActions(matchActionDTOList);
         return responseUpdateMatchDTO;
     }
     public Match findMatchById(Long id) {

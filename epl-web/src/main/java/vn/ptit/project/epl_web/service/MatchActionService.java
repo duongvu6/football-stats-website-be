@@ -34,13 +34,13 @@ public class MatchActionService {
     }
     public MatchActionDTO MatchActionToMatchActionDTO(MatchAction matchAction) {
         MatchActionDTO actionDTO=modelMapper.map(matchAction, MatchActionDTO.class);
-        actionDTO.setPlayerId(matchAction.getPlayer().getId());
+        actionDTO.setPlayer(matchAction.getPlayer().getId());
         return actionDTO;
     }
     public MatchAction RequestCreateMatchActionDTOtoMatchAction(RequestCreateMatchActionDTO matchActionDTO) {
         MatchAction matchAction=modelMapper.map(matchActionDTO, MatchAction.class);
-        matchAction.setPlayer(playerService.getPlayerById(matchActionDTO.getPlayerId()).get());
-        matchAction.setMatch(matchService.findMatchById(matchActionDTO.getMatchId()));
+        matchAction.setPlayer(playerService.getPlayerById(matchActionDTO.getPlayer()).get());
+        matchAction.setMatch(matchService.findMatchById(matchActionDTO.getMatch()));
         return matchAction;
     }
     public MatchAction handleCreateMatchAction(MatchAction matchAction) {
@@ -48,20 +48,20 @@ public class MatchActionService {
     }
     public ResponseCreateMatchActionDTO matchActionToResponseCreateMatchActionDTO(MatchAction matchAction) {
         ResponseCreateMatchActionDTO responseDTO=modelMapper.map(matchAction, ResponseCreateMatchActionDTO.class);
-        responseDTO.setPlayerId(matchAction.getPlayer().getId());
-        responseDTO.setMatchId(matchAction.getMatch().getId());
+        responseDTO.setPlayer(matchAction.getPlayer().getId());
+        responseDTO.setMatch(matchAction.getMatch().getId());
         return responseDTO;
     }
     public MatchAction handleUpdateMatchAction(RequestUpdateMatchActionDTO matchActionDTO) {
         MatchAction matchAction=modelMapper.map(matchActionDTO, MatchAction.class);
-        matchAction.setPlayer(playerService.getPlayerById(matchActionDTO.getPlayerId()).get());
-        matchAction.setMatch(matchService.findMatchById(matchActionDTO.getMatchId()));
+        matchAction.setPlayer(playerService.getPlayerById(matchActionDTO.getPlayer()).get());
+        matchAction.setMatch(matchService.findMatchById(matchActionDTO.getMatch()));
         return matchActionRepository.save(matchAction);
     }
     public ResponseUpdateMatchActionDTO matchActionToResponseUpdateMatchActionDTO(MatchAction matchAction) {
         ResponseUpdateMatchActionDTO responseDTO=modelMapper.map(matchAction, ResponseUpdateMatchActionDTO.class);
-        responseDTO.setPlayerId(matchAction.getPlayer().getId());
-        responseDTO.setMatchId(matchAction.getMatch().getId());
+        responseDTO.setPlayer(matchAction.getPlayer().getId());
+        responseDTO.setMatch(matchAction.getMatch().getId());
         return responseDTO;
     }
     public MatchAction findMatchActionById(Long id) {

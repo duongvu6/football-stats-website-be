@@ -10,7 +10,7 @@ public class RequestUpdateCstDTO {
     @NotNull
     private Long id;
     private int points,ranked,numWins,numLosses,numDraws,goalScores,goalConceded,diff;
-    private Long seasonId;
-    private Long clubId;
+    private Long season;
+    private Long club;
 
 }

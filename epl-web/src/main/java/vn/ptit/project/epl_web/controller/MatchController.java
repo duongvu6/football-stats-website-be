@@ -29,7 +29,7 @@ public class MatchController {
     @PostMapping("")
     @ApiMessage("Create a match")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateMatchDTO> createMatch(RequestCreateMatchDTO requestCreateMatchDTO)  {
+    public ResponseEntity<ResponseCreateMatchDTO> createMatch(@RequestBody  RequestCreateMatchDTO requestCreateMatchDTO)  {
         Match match=matchService.requestCreateMatchDTOtoMatch(requestCreateMatchDTO);
         matchService.handleCreateMatch(match);
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.matchToResponseCreateMatchDTO(match));
@@ -38,7 +38,7 @@ public class MatchController {
     @PutMapping("")
     @ApiMessage("Update a match")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUpdateMatchDTO> updateMatch(RequestUpdateMatchDTO requestUpdateMatchDTO)  {
+    public ResponseEntity<ResponseUpdateMatchDTO> updateMatch(@RequestBody RequestUpdateMatchDTO requestUpdateMatchDTO)  {
         Match match=matchService.handleUpdateMatch(requestUpdateMatchDTO);
         return ResponseEntity.status(HttpStatus.OK).body(matchService.matchToResponseUpdateMatchDTO(match));
     }

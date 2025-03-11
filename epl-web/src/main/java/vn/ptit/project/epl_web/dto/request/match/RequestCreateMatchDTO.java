@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @Getter
 public class RequestCreateMatchDTO {
     @NotNull
-    private Long hostId;
+    private Long host;
     @NotNull
-    private Long awayId;
+    private Long away;
     @NotNull
-    private Long seasonId;
+    private Long season;
     @NotNull
     private int round,awayScore,hostScore;
     @NotNull

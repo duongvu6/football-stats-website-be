@@ -1,5 +1,6 @@
 package vn.ptit.project.epl_web.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +25,7 @@ public class CoachClubController {
     @PutMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @ApiMessage("Update Coach Club")
-    public ResponseEntity<ResponseCoachClubDTO> updateCoachClub(@RequestBody RequestUpdateCoachClubDTO coachClubDTO) throws InvalidRequestException {
+    public ResponseEntity<ResponseCoachClubDTO> updateCoachClub(@Valid @RequestBody RequestUpdateCoachClubDTO coachClubDTO) throws InvalidRequestException {
         CoachClub existingCoachClub = this.coachClubService.findById(coachClubDTO.getId());
         if (existingCoachClub == null) {
             throw new InvalidRequestException("Coach club with id = " + coachClubDTO.getId() + " not found.");

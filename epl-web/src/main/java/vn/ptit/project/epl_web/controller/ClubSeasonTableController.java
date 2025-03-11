@@ -1,12 +1,10 @@
 package vn.ptit.project.epl_web.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateCstDTO;
@@ -25,7 +23,7 @@ public class ClubSeasonTableController {
     @PostMapping("")
     @ApiMessage("Create a club season table")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateClubSeasonTableDTO> creatClubSeasonTable(RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO)
+    public ResponseEntity<ResponseCreateClubSeasonTableDTO> creatClubSeasonTable(@Valid @RequestBody RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO)
     {
         ClubSeasonTable clubSeasonTable=clubSeasonTableService.requestCreateClubSeasonTableDTOtoClubSeasonTable(requestCreateClubSeasonTableDTO);
         clubSeasonTableService.handleCreateClubSeasonTable( clubSeasonTable );
@@ -34,7 +32,7 @@ public class ClubSeasonTableController {
     @PutMapping("")
     @ApiMessage("Update a club season table")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateClubSeasonTableDTO> updateClubSeasonTable(RequestUpdateCstDTO updateCstDTO){
+    public ResponseEntity<ResponseCreateClubSeasonTableDTO> updateClubSeasonTable(@Valid @RequestBody RequestUpdateCstDTO updateCstDTO){
         ClubSeasonTable clubSeasonTable=clubSeasonTableService.handleUpdateClubSeasonTable(updateCstDTO);
         return ResponseEntity.ok().body(clubSeasonTableService.clubSeasonTabletoResponseCreateClubSeasonTableDTO(clubSeasonTable));
     }

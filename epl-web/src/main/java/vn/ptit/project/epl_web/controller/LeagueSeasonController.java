@@ -1,6 +1,7 @@
 package vn.ptit.project.epl_web.controller;
 
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class LeagueSeasonController {
     @PostMapping("")
     @ApiMessage("Create new season")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateLeagueSeasonDTO> createLeagueSeason(@RequestBody RequestCreateLeagueSeasonDTO dto){
+    public ResponseEntity<ResponseCreateLeagueSeasonDTO> createLeagueSeason(@Valid @RequestBody RequestCreateLeagueSeasonDTO dto){
             LeagueSeason leagueSeason=this.leagueSeasonService.handleCreatLeagueSeason(leagueSeasonService.requestDTOtoLeagueSeason(dto));
             return ResponseEntity.status(HttpStatus.CREATED).body(this.leagueSeasonService.leagueSeasontoDTO(leagueSeason));
     }

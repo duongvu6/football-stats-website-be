@@ -9,5 +9,5 @@ public class MatchActionDTO {
     private Long id;
     private String action;
     private int minute;
-    private long playerId;
+    private long player;
 }

@@ -24,14 +24,14 @@ public class ClubSeasonTableService {
     }
     public ClubSeasonTablesDTO tableToClubSeasonTableDTO(ClubSeasonTable clubSeasonTable){
             ClubSeasonTablesDTO clubSeasonTablesDTO = modelMapper.map(clubSeasonTable, ClubSeasonTablesDTO.class);
-            clubSeasonTablesDTO.setClubId(clubSeasonTable.getClub().getId());
-            clubSeasonTablesDTO.setSeasonId(clubSeasonTable.getSeason().getId());
+            clubSeasonTablesDTO.setClub(clubSeasonTable.getClub().getId());
+            clubSeasonTablesDTO.setSeason(clubSeasonTable.getSeason().getId());
             return clubSeasonTablesDTO;
     }
     public ClubSeasonTable requestCreateClubSeasonTableDTOtoClubSeasonTable(RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO){
         ClubSeasonTable clubSeasonTable=modelMapper.map(requestCreateClubSeasonTableDTO, ClubSeasonTable.class);
-        clubSeasonTable.setClub(clubService.getClubById(requestCreateClubSeasonTableDTO.getClubId()).get());
-        clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateClubSeasonTableDTO.getSeasonId()));
+        clubSeasonTable.setClub(clubService.getClubById(requestCreateClubSeasonTableDTO.getClub()).get());
+        clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateClubSeasonTableDTO.getSeason()));
         return clubSeasonTable;
     }
     public ClubSeasonTable handleCreateClubSeasonTable(ClubSeasonTable clubSeasonTable){
@@ -39,14 +39,14 @@ public class ClubSeasonTableService {
     }
     public ResponseCreateClubSeasonTableDTO clubSeasonTabletoResponseCreateClubSeasonTableDTO(ClubSeasonTable clubSeasonTable){
         ResponseCreateClubSeasonTableDTO responseCreateClubSeasonTableDTO=modelMapper.map(clubSeasonTable, ResponseCreateClubSeasonTableDTO.class);
-        responseCreateClubSeasonTableDTO.setClubId(clubSeasonTable.getClub().getId());
-        responseCreateClubSeasonTableDTO.setSeasonId(clubSeasonTable.getSeason().getId());
+        responseCreateClubSeasonTableDTO.setClub(clubSeasonTable.getClub().getId());
+        responseCreateClubSeasonTableDTO.setSeason(clubSeasonTable.getSeason().getId());
         return responseCreateClubSeasonTableDTO;
     }
     public ClubSeasonTable handleUpdateClubSeasonTable(RequestUpdateCstDTO dto){
         ClubSeasonTable clubSeasonTable=modelMapper.map(dto, ClubSeasonTable.class);
-        clubSeasonTable.setClub(clubService.getClubById(dto.getClubId()).get());
-        clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(dto.getSeasonId()));
+        clubSeasonTable.setClub(clubService.getClubById(dto.getClub()).get());
+        clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(dto.getSeason()));
         return clubSeasonTableRepository.save(clubSeasonTable);
     }
 }

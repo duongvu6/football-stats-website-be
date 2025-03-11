@@ -63,7 +63,7 @@ public class LeagueSeasonService {
    }
    public ResponseUpdateLeaguesSeasonDTO seasontoDTO(LeagueSeason leagueSeason){
        ResponseUpdateLeaguesSeasonDTO dto=modelMapper.map(leagueSeason, ResponseUpdateLeaguesSeasonDTO.class);
-       dto.setLeagueId(leagueSeason.getLeague().getId());
+       dto.setLeague(leagueSeason.getLeague().getId());
        List<ClubSeasonTablesDTO> dtoList=new ArrayList<>();
        for(ClubSeasonTable cs:leagueSeason.getClubSeasonTables()){
            dtoList.add(this.clubSeasonTableService.tableToClubSeasonTableDTO(cs));

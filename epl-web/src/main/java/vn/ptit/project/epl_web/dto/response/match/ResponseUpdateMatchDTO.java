@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 public class ResponseUpdateMatchDTO {
     private Long id;
-    private Long hostId,awayId,seasonId;
+    private Long host,away,season;
     private int round,awayScore,hostScore;
     private LocalDateTime date;
-    private List<MatchActionDTO> matchActionDTOS;
+    private List<MatchActionDTO> matchActions;
 }

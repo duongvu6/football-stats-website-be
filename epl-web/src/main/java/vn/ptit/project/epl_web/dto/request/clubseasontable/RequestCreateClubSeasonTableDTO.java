@@ -11,6 +11,6 @@ public class RequestCreateClubSeasonTableDTO {
     @NotNull
     private int points,ranked,numWins,numLosses,numDraws,goalScores,goalConceded,diff;
     @NotNull
-    private Long seasonId,clubId;
+    private Long season,club;
 
 }

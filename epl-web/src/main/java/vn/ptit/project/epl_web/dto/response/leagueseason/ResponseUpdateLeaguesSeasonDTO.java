@@ -18,6 +18,6 @@ public class ResponseUpdateLeaguesSeasonDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Long leagueId;
+    private Long league;
     private List<ClubSeasonTablesDTO> clubSeasonTables;
 }

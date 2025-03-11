@@ -131,7 +131,7 @@ public class ModelMapperConfig {
 
             @Override
             protected void configure() {
-                skip(destination.getLeagueId());
+                skip(destination.getLeague());
 
             }
         });
