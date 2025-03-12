@@ -11,9 +11,12 @@ import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateCstDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.service.ClubSeasonTableService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
+
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/clubseasontables")
+@RequestMapping("/api/v1/club-season-tables")
 public class ClubSeasonTableController {
     private final ClubSeasonTableService clubSeasonTableService;
 
@@ -35,5 +38,17 @@ public class ClubSeasonTableController {
     public ResponseEntity<ResponseCreateClubSeasonTableDTO> updateClubSeasonTable(@Valid @RequestBody RequestUpdateCstDTO updateCstDTO){
         ClubSeasonTable clubSeasonTable=clubSeasonTableService.handleUpdateClubSeasonTable(updateCstDTO);
         return ResponseEntity.ok().body(clubSeasonTableService.clubSeasonTabletoResponseCreateClubSeasonTableDTO(clubSeasonTable));
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiMessage("Delete a club season table")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteAClubSeasonTable(@PathVariable Long id) throws InvalidRequestException {
+        Optional<ClubSeasonTable> clubSeasonTable = this.clubSeasonTableService.getClubSeasonTableById(id);
+        if (clubSeasonTable.isEmpty()) {
+            throw  new InvalidRequestException("Club season table with id = " + id + " not found");
+        }
+        this.clubSeasonTableService.handleDeleteClubSeasonTable(id);
+        return ResponseEntity.ok().body(null);
     }
 }

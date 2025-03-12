@@ -10,6 +10,8 @@ import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSe
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.repository.ClubSeasonTableRepository;
 
+import java.util.Optional;
+
 @Service
 public class ClubSeasonTableService {
         private final ClubSeasonTableRepository clubSeasonTableRepository;
@@ -24,8 +26,8 @@ public class ClubSeasonTableService {
     }
     public ClubSeasonTablesDTO tableToClubSeasonTableDTO(ClubSeasonTable clubSeasonTable){
             ClubSeasonTablesDTO clubSeasonTablesDTO = modelMapper.map(clubSeasonTable, ClubSeasonTablesDTO.class);
-            clubSeasonTablesDTO.setClub(clubSeasonTable.getClub().getId());
-            clubSeasonTablesDTO.setSeason(clubSeasonTable.getSeason().getId());
+            clubSeasonTablesDTO.setClub(this.clubService.clubToResponseClubDTO(clubSeasonTable.getClub()));
+            clubSeasonTablesDTO.setSeason(this.leagueSeasonService.leagueSeasonToLeagueSeasonDTO(clubSeasonTable.getSeason()));
             return clubSeasonTablesDTO;
     }
     public ClubSeasonTable requestCreateClubSeasonTableDTOtoClubSeasonTable(RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO){
@@ -48,5 +50,11 @@ public class ClubSeasonTableService {
         clubSeasonTable.setClub(clubService.getClubById(dto.getClub()).get());
         clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(dto.getSeason()));
         return clubSeasonTableRepository.save(clubSeasonTable);
+    }
+    public Optional<ClubSeasonTable> getClubSeasonTableById(Long id) {
+        return this.clubSeasonTableRepository.findById(id);
+    }
+    public void handleDeleteClubSeasonTable(Long id) {
+        this.clubSeasonTableRepository.deleteById(id);
     }
 }

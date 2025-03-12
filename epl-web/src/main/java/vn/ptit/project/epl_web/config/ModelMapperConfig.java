@@ -18,6 +18,8 @@ import vn.ptit.project.epl_web.dto.request.player.RequestUpdatePlayerDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.request.transferhistory.RequestUpdateTransferHistoryDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
+import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
+import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
@@ -132,7 +134,7 @@ public class ModelMapperConfig {
             @Override
             protected void configure() {
                 skip(destination.getLeague());
-
+                skip(destination.getClubSeasonTables());
             }
         });
 //        mapper.addMappings(new PropertyMap<HeadCoach, ResponseCoachDTO>() {
@@ -190,13 +192,20 @@ public class ModelMapperConfig {
                 skip(destination.getId());
             }
         });
-//        mapper.addMappings(new PropertyMap<CoachClub, ResponseCoachClubDTO>() {
-//            @Override
-//            protected void configure() {
-//                skip(destination.getHeadCoach());
-//                skip(destination.getClub());
-//            }
-//        });
+        mapper.addMappings(new PropertyMap<ClubSeasonTable, ResponseCreateClubSeasonTableDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getClub());
+                skip(destination.getSeason());
+            }
+        });
+        mapper.addMappings(new PropertyMap<ClubSeasonTable, ClubSeasonTablesDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getSeason());
+                skip(destination.getClub());
+            }
+        });
 
         return mapper;
     }

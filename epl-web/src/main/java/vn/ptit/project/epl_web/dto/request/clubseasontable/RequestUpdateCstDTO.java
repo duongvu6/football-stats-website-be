@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class RequestUpdateCstDTO {
-    @NotNull
+    @NotNull(message = "ID must not be null")
     private Long id;
     private int points,ranked,numWins,numLosses,numDraws,goalScores,goalConceded,diff;
     private Long season;

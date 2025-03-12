@@ -13,6 +13,7 @@ import vn.ptit.project.epl_web.dto.request.leagueseason.RequestCreateLeagueSeaso
 import vn.ptit.project.epl_web.dto.request.leagueseason.RequestUpdateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
+import vn.ptit.project.epl_web.dto.response.leagueseason.LeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
 import vn.ptit.project.epl_web.repository.LeagueSeasonRepository;
@@ -54,6 +55,10 @@ public class LeagueSeasonService {
         dto.setLeague(leagueId);
         return dto;
    }
+   public LeagueSeasonDTO leagueSeasonToLeagueSeasonDTO(LeagueSeason leagueSeason) {
+       return this.modelMapper.map(leagueSeason, LeagueSeasonDTO.class);
+   }
+
    public LeagueSeason handleUpdateLeagueSeason(LeagueSeason leagueSeason,RequestUpdateLeagueSeasonDTO dto){
          modelMapper.map(dto, leagueSeason);
          League league=leagueService.findByLeagueId(dto.getLeague());
