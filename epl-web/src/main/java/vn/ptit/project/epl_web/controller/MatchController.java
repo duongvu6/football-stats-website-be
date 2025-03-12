@@ -38,7 +38,7 @@ public class MatchController {
     @PutMapping("")
     @ApiMessage("Update a match")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUpdateMatchDTO> updateMatch(@RequestBody RequestUpdateMatchDTO requestUpdateMatchDTO)  {
+    public ResponseEntity<ResponseUpdateMatchDTO> updateMatch(@RequestBody RequestUpdateMatchDTO requestUpdateMatchDTO) throws InvalidRequestException {
         Match match=matchService.handleUpdateMatch(requestUpdateMatchDTO);
         return ResponseEntity.status(HttpStatus.OK).body(matchService.matchToResponseUpdateMatchDTO(match));
     }

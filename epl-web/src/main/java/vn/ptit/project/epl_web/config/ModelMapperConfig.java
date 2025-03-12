@@ -25,6 +25,11 @@ import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
+import vn.ptit.project.epl_web.dto.response.match.MatchActionDTO;
+import vn.ptit.project.epl_web.dto.response.match.ResponseCreateMatchDTO;
+import vn.ptit.project.epl_web.dto.response.match.ResponseUpdateMatchDTO;
+import vn.ptit.project.epl_web.dto.response.matchaction.ResponseCreateMatchActionDTO;
+import vn.ptit.project.epl_web.dto.response.matchaction.ResponseUpdateMatchActionDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 
@@ -206,6 +211,52 @@ public class ModelMapperConfig {
                 skip(destination.getClub());
             }
         });
+        mapper.addMappings(new PropertyMap<Match, ResponseCreateMatchDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getSeason());
+                skip(destination.getHost());
+                skip(destination.getAway());
+            }
+        });
+        mapper.addMappings(new PropertyMap<Match, ResponseUpdateMatchDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getSeason());
+                skip(destination.getHost());
+                skip(destination.getAway());
+                skip(destination.getMatchActions());
+            }
+        });
+
+        mapper.addMappings(new PropertyMap<RequestCreateMatchActionDTO, MatchAction>() {
+            @Override
+            protected void configure() {
+                skip(destination.getMatch());
+                skip(destination.getPlayer());
+            }
+        });
+        mapper.addMappings(new PropertyMap<MatchAction, ResponseCreateMatchActionDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getMatch());
+                skip(destination.getPlayer());
+            }
+        });
+        mapper.addMappings(new PropertyMap<MatchAction, ResponseUpdateMatchActionDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getMatch());
+                skip(destination.getPlayer());
+            }
+        });
+        mapper.addMappings(new PropertyMap<MatchAction, MatchActionDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPlayer());
+            }
+        });
+
 
         return mapper;
     }

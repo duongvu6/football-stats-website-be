@@ -34,7 +34,7 @@ public class MatchActionService {
     }
     public MatchActionDTO MatchActionToMatchActionDTO(MatchAction matchAction) {
         MatchActionDTO actionDTO=modelMapper.map(matchAction, MatchActionDTO.class);
-        actionDTO.setPlayer(matchAction.getPlayer().getId());
+        actionDTO.setPlayer(this.playerService.playerToResponsePlayerDTO(matchAction.getPlayer()));
         return actionDTO;
     }
     public MatchAction RequestCreateMatchActionDTOtoMatchAction(RequestCreateMatchActionDTO matchActionDTO) {
@@ -60,7 +60,7 @@ public class MatchActionService {
     }
     public ResponseUpdateMatchActionDTO matchActionToResponseUpdateMatchActionDTO(MatchAction matchAction) {
         ResponseUpdateMatchActionDTO responseDTO=modelMapper.map(matchAction, ResponseUpdateMatchActionDTO.class);
-        responseDTO.setPlayer(matchAction.getPlayer().getId());
+        responseDTO.setPlayer(this.playerService.playerToResponsePlayerDTO(matchAction.getPlayer()));
         responseDTO.setMatch(matchAction.getMatch().getId());
         return responseDTO;
     }

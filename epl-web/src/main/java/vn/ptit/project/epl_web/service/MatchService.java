@@ -5,9 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import vn.ptit.project.epl_web.domain.HeadCoach;
-import vn.ptit.project.epl_web.domain.Match;
-import vn.ptit.project.epl_web.domain.MatchAction;
+import vn.ptit.project.epl_web.domain.*;
 import vn.ptit.project.epl_web.dto.request.match.RequestCreateMatchDTO;
 import vn.ptit.project.epl_web.dto.request.match.RequestUpdateMatchDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
@@ -15,10 +13,12 @@ import vn.ptit.project.epl_web.dto.response.match.MatchActionDTO;
 import vn.ptit.project.epl_web.dto.response.match.ResponseCreateMatchDTO;
 import vn.ptit.project.epl_web.dto.response.match.ResponseUpdateMatchDTO;
 import vn.ptit.project.epl_web.repository.MatchRepository;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,17 +48,29 @@ public class MatchService {
     }
     public ResponseCreateMatchDTO matchToResponseCreateMatchDTO(Match match) {
         ResponseCreateMatchDTO responseCreateMatchDTO = modelMapper.map(match, ResponseCreateMatchDTO.class);
-        responseCreateMatchDTO.setHost(match.getHost().getId());
-        responseCreateMatchDTO.setAway(match.getAway().getId());
-        responseCreateMatchDTO.setSeason(match.getSeason().getId());
+        responseCreateMatchDTO.setHost(this.clubService.clubToResponseClubDTO(match.getHost()));
+        responseCreateMatchDTO.setAway(this.clubService.clubToResponseClubDTO(match.getAway()));
+        responseCreateMatchDTO.setSeason(this.leagueSeasonService.leagueSeasonToLeagueSeasonDTO(match.getSeason()));
         return responseCreateMatchDTO;
     }
-    public Match handleUpdateMatch(RequestUpdateMatchDTO updateMatchDTO) {
+    public Match handleUpdateMatch(RequestUpdateMatchDTO updateMatchDTO) throws InvalidRequestException {
         Match match = modelMapper.map(updateMatchDTO, Match.class);
+        Optional<Club> host = this.clubService.getClubById(updateMatchDTO.getHost());
+        Optional<Club> away = this.clubService.getClubById(updateMatchDTO.getAway());
+        LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(updateMatchDTO.getSeason());
+        if (host.isEmpty() || away.isEmpty()) {
+            throw new InvalidRequestException("Host or away club not found");
+        }
+        match.setAway(away.get());
+        match.setHost(host.get());
+        match.setSeason(leagueSeason);
         return matchRepository.save(match);
     }
     public ResponseUpdateMatchDTO matchToResponseUpdateMatchDTO(Match match) {
         ResponseUpdateMatchDTO responseUpdateMatchDTO = modelMapper.map(match, ResponseUpdateMatchDTO.class);
+        responseUpdateMatchDTO.setHost(this.clubService.clubToResponseClubDTO(match.getHost()));
+        responseUpdateMatchDTO.setAway(this.clubService.clubToResponseClubDTO(match.getAway()));
+        responseUpdateMatchDTO.setSeason(this.leagueSeasonService.leagueSeasonToLeagueSeasonDTO(match.getSeason()));
         List<MatchActionDTO> matchActionDTOList = new ArrayList<>();
         for(MatchAction x: match.getMatchActions()) {
             matchActionDTOList.add(matchActionService.MatchActionToMatchActionDTO(x));

@@ -20,7 +20,7 @@ import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 @RestController
-@RequestMapping("/api/v1/match_actions")
+@RequestMapping("/api/v1/match-actions")
 public class MatchActionController {
     private final MatchActionService matchActionService;
 
