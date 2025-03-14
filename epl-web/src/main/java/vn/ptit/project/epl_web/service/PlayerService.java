@@ -117,8 +117,18 @@ public class PlayerService {
         List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
                 .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
                 .collect(Collectors.toList());
+        if (transferHistoriesDTOs.isEmpty()) {
+            playerDTO.setCurrentClub("No club");
+        } else {
+            transferHistoriesDTOs.get(transferHistoriesDTOs.size() - 1).setPreviousClub("-");
+            for (int i = transferHistoriesDTOs.size() - 2; i >= 0; i--) {
+                transferHistoriesDTOs.get(i).setPreviousClub(transferHistoriesDTOs.get(i + 1).getClub());
+            }
+            playerDTO.setCurrentClub(transferHistoriesDTOs.get(0).getClub());
+        }
 
         playerDTO.setTransferHistories(transferHistoriesDTOs);
+
         playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         return playerDTO;
     }
@@ -143,7 +153,15 @@ public class PlayerService {
                     List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
                             .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
                             .collect(Collectors.toList());
-
+                    if (transferHistoriesDTOs.isEmpty()) {
+                        playerDTO.setCurrentClub("No club");
+                    } else {
+                        transferHistoriesDTOs.get(transferHistoriesDTOs.size() - 1).setPreviousClub("-");
+                        for (int i = transferHistoriesDTOs.size() - 2; i >= 0; i--) {
+                            transferHistoriesDTOs.get(i).setPreviousClub(transferHistoriesDTOs.get(i + 1).getClub());
+                        }
+                        playerDTO.setCurrentClub(transferHistoriesDTOs.get(0).getClub());
+                    }
                     playerDTO.setTransferHistories(transferHistoriesDTOs);
                     playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
                     return playerDTO;
