@@ -5,19 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import vn.ptit.project.epl_web.domain.CoachClub;
-import vn.ptit.project.epl_web.domain.HeadCoach;
-import vn.ptit.project.epl_web.domain.Player;
-import vn.ptit.project.epl_web.domain.TransferHistory;
+import vn.ptit.project.epl_web.domain.*;
 import vn.ptit.project.epl_web.dto.request.coach.RequestCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.request.coach.RequestUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.coach.ClubDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseCreateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coach.ResponseUpdateCoachDTO;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
-import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
-import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.CoachRepository;
 import vn.ptit.project.epl_web.util.AgeUtil;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
@@ -33,11 +29,13 @@ public class CoachService {
     private final CoachRepository coachRepository;
     private final ModelMapper modelMapper;
     private final CoachClubService coachClubService;
+    private final ClubService clubService;
 
-    public CoachService(CoachRepository coachRepository, ModelMapper modelMapper, CoachClubService coachClubService) {
+    public CoachService(CoachRepository coachRepository, ModelMapper modelMapper, CoachClubService coachClubService, ClubService clubService) {
         this.coachRepository = coachRepository;
         this.modelMapper = modelMapper;
         this.coachClubService = coachClubService;
+        this.clubService = clubService;
     }
 
     public HeadCoach handleCreateCoach(HeadCoach coach) {
@@ -112,6 +110,7 @@ public class CoachService {
             responseCoachClubDTOS.add(coachClubService.coachClubToResponseCoachClubDTO(coachClub));
         }
         coachDTO.setCoachClubs(responseCoachClubDTOS);
+        coachDTO.setCurrentClub(findCurrentClubByCoachId(coach));
         return coachDTO;
     }
     public ResponseCoachDTO coachToResponseCoachWithSortedTransferHistory(HeadCoach coach) throws InvalidRequestException {
@@ -128,6 +127,34 @@ public class CoachService {
 
         coachDTO.setCoachClubs(coachClubDTOs);
         coachDTO.setAge(AgeUtil.calculateAge(coach.getDob()));
+        coachDTO.setCurrentClub(findCurrentClubByCoachId(coach));
         return coachDTO;
+    }
+    public ClubDTO findCurrentClubByCoachId(HeadCoach coach)
+    {
+        List<CoachClub> coachClubList=new ArrayList<>();
+        for(CoachClub x: coach.getCoachClubs())
+        {
+            if(x.getHeadCoach().getId().equals(coach.getId()))
+            {
+                coachClubList.add(x);
+            }
+        }
+
+        List<CoachClub> sortedList = coachClubList.stream()
+                .sorted(Comparator.comparing(CoachClub::getEndDate).reversed()) // Ngày gần nhất trước
+                .collect(Collectors.toList());
+        if(sortedList.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            CoachClub coachClub = sortedList.get(0);
+            Club club = coachClub.getClub();
+            return modelMapper.map(club, ClubDTO.class);
+        }
+
+
     }
 }

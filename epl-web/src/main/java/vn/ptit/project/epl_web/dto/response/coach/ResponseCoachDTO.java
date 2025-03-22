@@ -2,6 +2,7 @@ package vn.ptit.project.epl_web.dto.response.coach;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.ptit.project.epl_web.domain.Club;
 import vn.ptit.project.epl_web.dto.response.coachclub.ResponseCoachClubDTO;
 
 import java.time.LocalDate;
@@ -16,4 +17,5 @@ public class ResponseCoachDTO {
     private LocalDate dob;
     private List<String> citizenships;
     public List<ResponseCoachClubDTO> coachClubs;
+    private ClubDTO currentClub;
 }

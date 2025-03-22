@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"season_id", "club_id"})
 })
-public class ClubSeasonTable {
+public class    ClubSeasonTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
