@@ -15,5 +15,5 @@ public class ResponseUpdateCoachDTO {
     private LocalDate dob;
     private List<String> citizenships;
     private List<ResponseCoachClubDTO> coachClubs;
-    
+    private ClubDTO currentClub;
 }

@@ -70,6 +70,7 @@ public class CoachService {
         }
         coachDTO.setCoachClubs(responseCoachClubDTOS);
         coachDTO.setAge(AgeUtil.calculateAge(coachDTO.getDob()));
+        coachDTO.setCurrentClub(findCurrentClubByCoachId(coach));
         return coachDTO;
     }
 
@@ -132,14 +133,15 @@ public class CoachService {
     }
     public ClubDTO findCurrentClubByCoachId(HeadCoach coach)
     {
-        List<CoachClub> coachClubList=new ArrayList<>();
-        for(CoachClub x: coach.getCoachClubs())
-        {
-            if(x.getHeadCoach().getId().equals(coach.getId()))
-            {
-                coachClubList.add(x);
-            }
-        }
+//        List<CoachClub> coachClubList=new ArrayList<>();
+//        for(CoachClub x: coach.getCoachClubs())
+//        {
+//            if(x.getHeadCoach().getId().equals(coach.getId()))
+//            {
+//                coachClubList.add(x);
+//            }
+//        }
+        List<CoachClub> coachClubList = coach.getCoachClubs();
 
         List<CoachClub> sortedList = coachClubList.stream()
                 .sorted(Comparator.comparing(CoachClub::getEndDate).reversed()) // Ngày gần nhất trước

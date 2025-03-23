@@ -6,10 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.Club;
+import vn.ptit.project.epl_web.domain.CoachClub;
+import vn.ptit.project.epl_web.domain.HeadCoach;
 import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.club.CoachDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
@@ -17,8 +20,10 @@ import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransf
 import vn.ptit.project.epl_web.repository.ClubRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
@@ -95,6 +100,25 @@ public class ClubService {
             transferHistories.add(this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th));
         }
         clubDTO.setTransferHistories(transferHistories);
+        clubDTO.setCurrentCoach(findCurrentCoachByClub(club));
         return clubDTO;
+    }
+    public CoachDTO findCurrentCoachByClub(Club club)
+    {
+        List<CoachClub> coachClubList=club.getCoachClubs();
+        List<CoachClub> sortedList = coachClubList.stream()
+                .sorted(Comparator.comparing(CoachClub::getEndDate).reversed()) // Ngày gần nhất trước
+                .collect(Collectors.toList());
+        if(sortedList.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            CoachClub coachClub=sortedList.get(0);
+            HeadCoach coach=coachClub.getHeadCoach();
+            return modelMapper.map(coach, CoachDTO.class);
+        }
+
     }
 }
