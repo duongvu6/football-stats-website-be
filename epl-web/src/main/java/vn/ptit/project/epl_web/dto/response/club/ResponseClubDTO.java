@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.domain.CoachClub;
+import vn.ptit.project.epl_web.domain.Player;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public class ResponseClubDTO {
 //    private List<ClubSeasonTable> clubSeasonTables;
     private List<ResponseCreateTransferHistoryDTO> transferHistories;
     private CoachDTO currentCoach;
+    private List<PlayerDTO> currentPlayerList;
 }

@@ -12,10 +12,7 @@ import vn.ptit.project.epl_web.domain.TransferHistory;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
-import vn.ptit.project.epl_web.dto.response.club.CoachDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
+import vn.ptit.project.epl_web.dto.response.club.*;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.ClubRepository;
 
@@ -120,5 +117,13 @@ public class ClubService {
             return modelMapper.map(coach, CoachDTO.class);
         }
 
+    }
+    public List<PlayerDTO> findPlayersByClub(Club club)
+    {
+        List<TransferHistory> transferHistories = club.getTransferHistories();
+        for(TransferHistory th: transferHistories)
+        {
+            if(th.getType().equals(""))
+        }
     }
 }
