@@ -69,7 +69,7 @@ public class ClubController {
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a club")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Void> deleteAClub(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAClub(@PathVariable Long id) throws InvalidRequestException {
         this.clubService.handleDeleteClub(id);
         return ResponseEntity.ok(null);
     }

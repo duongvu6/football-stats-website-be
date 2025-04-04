@@ -5,6 +5,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.ptit.project.epl_web.domain.*;
+import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.request.coachclub.RequestCreateCoachClubDTO;
 import vn.ptit.project.epl_web.dto.request.coachclub.RequestUpdateCoachClubDTO;
@@ -133,6 +134,13 @@ public class ModelMapperConfig {
             protected void configure() {
                 skip(destination.getClubSeasonTables());
                 skip(destination.getLeague());
+            }
+        });
+        mapper.addMappings(new PropertyMap<RequestUpdateClubDTO, ClubDTO>() {
+
+            @Override
+            protected void configure() {
+                skip(destination.getId());
             }
         });
         mapper.addMappings(new PropertyMap<LeagueSeason, ResponseUpdateLeaguesSeasonDTO>() {

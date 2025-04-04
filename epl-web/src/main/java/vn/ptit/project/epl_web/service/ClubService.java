@@ -5,10 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import vn.ptit.project.epl_web.domain.Club;
-import vn.ptit.project.epl_web.domain.CoachClub;
-import vn.ptit.project.epl_web.domain.HeadCoach;
-import vn.ptit.project.epl_web.domain.TransferHistory;
+import vn.ptit.project.epl_web.domain.*;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
@@ -18,6 +15,9 @@ import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.ClubRepository;
+import vn.ptit.project.epl_web.repository.ClubSeasonTableRepository;
+import vn.ptit.project.epl_web.repository.MatchRepository;
+import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,11 +30,17 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ModelMapper modelMapper;
     private final TransferHistoryService transferHistoryService;
+    private final CoachClubService coachClubService;
+    private final ClubSeasonTableRepository clubSeasonTableRepository;
+    private final MatchRepository matchRepository;
 
-    public ClubService(ClubRepository clubRepository, ModelMapper modelMapper, TransferHistoryService transferHistoryService) {
+    public ClubService(ClubRepository clubRepository, ModelMapper modelMapper, TransferHistoryService transferHistoryService, CoachClubService coachClubService, ClubSeasonTableRepository clubSeasonTableRepository, MatchRepository matchRepository) {
         this.clubRepository = clubRepository;
         this.modelMapper = modelMapper;
         this.transferHistoryService = transferHistoryService;
+        this.coachClubService = coachClubService;
+        this.clubSeasonTableRepository = clubSeasonTableRepository;
+        this.matchRepository = matchRepository;
     }
 
     public Club handleCreateClub(Club club) {
@@ -50,16 +56,8 @@ public class ClubService {
         return this.clubRepository.findById(id);
     }
     public Club handleUpdateClub(Club club, RequestUpdateClubDTO clubDTO) {
-//        if (clubDTO.getCoachHistory() != null) {
-//            //TO-DO
-//        }
-//        if (clubDTO.getPlayerHistory() != null) {
-//            //TO-DO
-//        }
-//        club = this.modelMapper.map(club, clubDTO);
-//        return this.clubRepository.save(club);
-        //TODO finish function
-        return null;
+        this.modelMapper.map(clubDTO, club);
+        return this.clubRepository.save(club);
     }
     public ResponseUpdateClubDTO clubToResponseUpdateClub(Club club) {
         return this.modelMapper.map(club, ResponseUpdateClubDTO.class);
@@ -78,19 +76,32 @@ public class ClubService {
         result.setResult(list);
         return result;
     }
-    public void handleDeleteClub(Long id) {
+    public void handleDeleteClub(Long id) throws InvalidRequestException {
         Optional<Club> club = this.clubRepository.findById(id);
         if (club.isPresent()) {
             Club deletedClub = club.get();
-            //delete all club related
-            //TO-DO
 
-            //delete all player positions
-            //TO-DO
+            for (TransferHistory th : deletedClub.getTransferHistories()) {
+                this.transferHistoryService.handleDeleteTransferHistory(th.getId());
+            }
+            for (CoachClub cc : deletedClub.getCoachClubs()) {
+                this.coachClubService.handleDeleteCoachClubWithId(cc.getId());
+            }
+            for (ClubSeasonTable cst : deletedClub.getClubSeasonTables()) {
+                this.clubSeasonTableRepository.delete(cst);
+            }
+            ArrayList<Match> matchesAsHost = new ArrayList<>(this.matchRepository.findByHost(deletedClub));
+            for (Match match : matchesAsHost) {
+                this.matchRepository.delete(match);
+            }
+
+            List<Match> matchesAsAway =new ArrayList<>(this.matchRepository.findByAway(deletedClub));;
+            for (Match match : matchesAsAway) {
+                this.matchRepository.delete(match);
+            }
+            this.clubRepository.delete(deletedClub);
         }
 
-
-        this.clubRepository.deleteById(id);
     }
 
     public ResponseClubDTO clubToResponseClubDTO(Club club) {
@@ -108,7 +119,7 @@ public class ClubService {
         List<CoachClub> coachClubList=club.getCoachClubs();
         List<CoachClub> sortedList = coachClubList.stream()
                 .sorted(Comparator.comparing(CoachClub::getEndDate).reversed()) // Ngày gần nhất trước
-                .collect(Collectors.toList());
+                .toList();
         if(sortedList.isEmpty())
         {
             return null;
