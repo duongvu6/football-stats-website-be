@@ -36,7 +36,12 @@ public class PlayerService {
         this.transferHistoryService = transferHistoryService;
     }
 
-
+    public List<ResponsePlayerDTO> getSquadByClubAndSeason(Long clubId, Long seasonId) {
+        List<Player> players = playerRepository.findSquadByClubAndSeason(clubId, seasonId);
+        return players.stream()
+                .map(this::playerToResponsePlayerDTO)
+                .collect(Collectors.toList());
+    }
     public Player handleCreatePlayer(Player player) {
         return this.playerRepository.save(player);
     }
