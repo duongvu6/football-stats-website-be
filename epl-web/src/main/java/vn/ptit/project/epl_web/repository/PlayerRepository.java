@@ -15,23 +15,21 @@ public interface PlayerRepository extends JpaRepository<Player, Long>, JpaSpecif
 
     Optional<Player> findById(Long id);
     @Query("""
-        SELECT DISTINCT p
-        FROM Player p
-        JOIN p.transferHistories th
-        JOIN th.club c
-        JOIN c.clubSeasonTables cst
-        WHERE c.id = :clubId
-          AND cst.season.id = :seasonId
-          AND th.date <= cst.season.endDate
-          AND (th.type NOT IN ('End of contract', 'Retired', 'Contract Terminated') OR th.type IS NULL)
-          AND NOT EXISTS (
-              SELECT 1
-              FROM TransferHistory th2
-              WHERE th2.player.id = p.id
-                AND th2.date <= cst.season.endDate
-                AND th2.date >= cst.season.startDate
-                AND th2.club.id != :clubId
-          )
-    """)
+    SELECT DISTINCT p
+    FROM Player p
+    JOIN TransferHistory th ON th.player = p
+    JOIN LeagueSeason ls ON ls.id = :seasonId
+    WHERE th.club.id = :clubId
+    AND th.date <= ls.endDate
+    AND (th.type NOT IN ('End of contract', 'Retired', 'Contract Terminated') OR th.type IS NULL)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM TransferHistory th2
+        WHERE th2.player = p
+        AND th2.date > th.date
+        AND th2.date <= ls.endDate
+        AND (th2.club.id != :clubId OR th2.type IN ('End of contract', 'Retired', 'Contract Terminated'))
+    )
+""")
     List<Player> findSquadByClubAndSeason(@Param("clubId") Long clubId, @Param("seasonId") Long seasonId);
 }
