@@ -16,8 +16,10 @@ import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.service.ClubService;
 import vn.ptit.project.epl_web.service.PlayerService;
+import vn.ptit.project.epl_web.service.TransferHistoryService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
@@ -29,9 +31,11 @@ import java.util.Optional;
 public class ClubController {
     private final ClubService clubService;
     private final PlayerService playerService;
-    public ClubController(ClubService clubService, PlayerService playerService) {
+    private final TransferHistoryService transferHistoryService;
+    public ClubController(ClubService clubService, PlayerService playerService, TransferHistoryService transferHistoryService) {
         this.clubService = clubService;
         this.playerService = playerService;
+        this.transferHistoryService = transferHistoryService;
     }
 
     @PostMapping("")
@@ -87,5 +91,14 @@ public class ClubController {
     ) {
         List<ResponsePlayerDTO> squad = playerService.getSquadByClubAndSeason(clubId, seasonId);
         return ResponseEntity.ok(squad);
+    }
+    @GetMapping("/{id}/transfers")
+    @ApiMessage("Fetch all transfers for a club in a specific season")
+    public ResponseEntity<List<ResponseCreateTransferHistoryDTO>> getAllTransfersByClubAndSeason(
+            @PathVariable("id") Long clubId,
+            @RequestParam("seasonId") Long seasonId
+    ) {
+        List<ResponseCreateTransferHistoryDTO> transfers = transferHistoryService.getAllTransfersByClubAndSeason(clubId, seasonId);
+        return ResponseEntity.ok(transfers);
     }
 }

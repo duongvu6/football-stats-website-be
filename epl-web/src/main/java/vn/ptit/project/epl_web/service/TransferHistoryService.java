@@ -17,7 +17,8 @@ import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferHistoryService {
@@ -109,6 +110,73 @@ public class TransferHistoryService {
         transferHistory.setClub(null);
         transferHistory.setPlayer(null);
         this.repository.delete(transferHistory);
+    }
+    public List<ResponseCreateTransferHistoryDTO> getAllTransfersByClubAndSeason(Long clubId, Long seasonId) {
+        // Fetch transfers filtered by club and season
+        List<TransferHistory> filteredTransfers = this.repository.findAllTransfersByClubAndSeason(clubId, seasonId);
+
+        // Create a set of player IDs from the filtered transfers
+        Set<Long> playerIds = filteredTransfers.stream()
+                .map(th -> th.getPlayer().getId())
+                .collect(Collectors.toSet());
+
+        // For each player, fetch ALL their transfer history
+        Map<Long, List<TransferHistory>> completeTransferHistoryByPlayer = new HashMap<>();
+        for (Long playerId : playerIds) {
+            Optional<Player> player = playerRepository.findById(playerId);
+            if (player.isPresent()) {
+                List<TransferHistory> completeHistory = player.get().getTransferHistories();
+                completeTransferHistoryByPlayer.put(playerId, completeHistory);
+            }
+        }
+
+        // Process each filtered transfer with the context of the complete history
+        List<ResponseCreateTransferHistoryDTO> resultList = new ArrayList<>();
+        for (TransferHistory filteredTransfer : filteredTransfers) {
+            ResponseCreateTransferHistoryDTO dto = transferHistoryToResponseCreateTransferHistoryDTO(filteredTransfer);
+
+            // Find the previous club from complete history
+            String previousClub = findPreviousClub(
+                    filteredTransfer,
+                    completeTransferHistoryByPlayer.get(filteredTransfer.getPlayer().getId())
+            );
+
+            dto.setPreviousClub(previousClub);
+            resultList.add(dto);
+        }
+
+        return resultList;
+    }
+
+    /**
+     * Find the previous club for a transfer by looking at the player's complete transfer history
+     */
+    private String findPreviousClub(TransferHistory currentTransfer, List<TransferHistory> completeHistory) {
+        if (completeHistory == null || completeHistory.isEmpty()) {
+            return null;
+        }
+
+        // Sort all transfers by date
+        List<TransferHistory> sortedHistory = completeHistory.stream()
+                .sorted(Comparator.comparing(TransferHistory::getDate))
+                .toList();
+
+        // Find the transfer immediately before the current one
+        TransferHistory previousTransfer = null;
+        for (TransferHistory th : sortedHistory) {
+            // If we've found current transfer, break the loop
+            if (th.getId().equals(currentTransfer.getId())) {
+                break;
+            }
+            previousTransfer = th;
+        }
+
+        // If we found a previous transfer, return its club name
+        if (previousTransfer != null && previousTransfer.getClub() != null) {
+            return previousTransfer.getClub().getName();
+        }
+
+        return null;
     }
 
 }
