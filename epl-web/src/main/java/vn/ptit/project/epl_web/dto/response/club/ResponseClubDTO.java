@@ -18,4 +18,5 @@ public class ResponseClubDTO {
 //    private List<ClubSeasonTable> clubSeasonTables;
     private List<ResponseCreateTransferHistoryDTO> transferHistories;
     private CoachDTO currentCoach;
+    private List<PlayerDTO> currentPlayerList;
 }

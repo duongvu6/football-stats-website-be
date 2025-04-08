@@ -9,10 +9,7 @@ import vn.ptit.project.epl_web.domain.*;
 import vn.ptit.project.epl_web.dto.request.club.RequestCreateClubDTO;
 import vn.ptit.project.epl_web.dto.request.club.RequestUpdateClubDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
-import vn.ptit.project.epl_web.dto.response.club.CoachDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
-import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
+import vn.ptit.project.epl_web.dto.response.club.*;
 import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.repository.ClubRepository;
 import vn.ptit.project.epl_web.repository.ClubSeasonTableRepository;
@@ -131,5 +128,33 @@ public class ClubService {
             return modelMapper.map(coach, CoachDTO.class);
         }
 
+    }
+    public boolean playFor(Player player, Club club,LeagueSeason season)
+    {
+        List<TransferHistory> transferHistories = player.getTransferHistories();
+        List<TransferHistory> filteredSortedHistories = transferHistories.stream()
+                .filter(th -> !th.getDate().isBefore(season.getStartDate()) && !th.getDate().isAfter(season.getEndDate()))
+                .sorted((th1, th2) -> th2.getDate().compareTo(th1.getDate())) // Sắp xếp giảm dần
+                .toList();
+
+
+
+    }
+    public List<PlayerDTO> findPlayersByClub(Club club,LeagueSeason season)
+    {
+        List<TransferHistory> transferHistories = club.getTransferHistories();
+        List<PlayerDTO> currentPlayerList = new ArrayList<>();
+        for(TransferHistory th: transferHistories)
+        {
+            if(th.getType().equals("Permanent")||th.getType().equals("Free Transfer")||th.getType().equals("Loan")||th.getType().equals("Youth Promote"))
+            {
+                Player player =th.getPlayer();
+                if(playFor(player,club,season)&&!transferHistories.contains(th))
+                {
+                    currentPlayerList.add(modelMapper.map(player, PlayerDTO.class));
+                }
+            }
+        }
+        return currentPlayerList;
     }
 }
