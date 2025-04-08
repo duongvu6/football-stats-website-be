@@ -82,7 +82,7 @@ public class MatchService {
         return matchRepository.findById(id).orElse(null);
     }
     public ResultPaginationDTO fetchAllMatches(Specification<Match> spe, Pageable pageable) {
-        Page<Match> matchPage = this.matchRepository.findAll(pageable);
+        Page<Match> matchPage = this.matchRepository.findAll(spe, pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);

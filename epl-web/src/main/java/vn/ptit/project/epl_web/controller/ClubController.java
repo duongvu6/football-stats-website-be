@@ -15,18 +15,27 @@ import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseCreateClubDTO;
 import vn.ptit.project.epl_web.dto.response.club.ResponseUpdateClubDTO;
+import vn.ptit.project.epl_web.dto.response.player.ResponsePlayerDTO;
+import vn.ptit.project.epl_web.dto.response.transferhistory.ResponseCreateTransferHistoryDTO;
 import vn.ptit.project.epl_web.service.ClubService;
+import vn.ptit.project.epl_web.service.PlayerService;
+import vn.ptit.project.epl_web.service.TransferHistoryService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/clubs")
 public class ClubController {
     private final ClubService clubService;
-    public ClubController(ClubService clubService) {
+    private final PlayerService playerService;
+    private final TransferHistoryService transferHistoryService;
+    public ClubController(ClubService clubService, PlayerService playerService, TransferHistoryService transferHistoryService) {
         this.clubService = clubService;
+        this.playerService = playerService;
+        this.transferHistoryService = transferHistoryService;
     }
 
     @PostMapping("")
@@ -69,9 +78,27 @@ public class ClubController {
     @DeleteMapping("/{id}")
     @ApiMessage("Delete a club")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Void> deleteAClub(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAClub(@PathVariable Long id) throws InvalidRequestException {
         this.clubService.handleDeleteClub(id);
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/{id}/squad")
+    @ApiMessage("Fetch squad list for a club in a specific season")
+    public ResponseEntity<List<ResponsePlayerDTO>> getSquadByClubAndSeason(
+            @PathVariable("id") Long clubId,
+            @RequestParam("seasonId") Long seasonId
+    ) {
+        List<ResponsePlayerDTO> squad = playerService.getSquadByClubAndSeason(clubId, seasonId);
+        return ResponseEntity.ok(squad);
+    }
+    @GetMapping("/{id}/transfers")
+    @ApiMessage("Fetch all transfers for a club in a specific season")
+    public ResponseEntity<List<ResponseCreateTransferHistoryDTO>> getAllTransfersByClubAndSeason(
+            @PathVariable("id") Long clubId,
+            @RequestParam("seasonId") Long seasonId
+    ) {
+        List<ResponseCreateTransferHistoryDTO> transfers = transferHistoryService.getAllTransfersByClubAndSeason(clubId, seasonId);
+        return ResponseEntity.ok(transfers);
+    }
 }

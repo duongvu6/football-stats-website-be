@@ -17,9 +17,13 @@ import vn.ptit.project.epl_web.dto.request.leagueseason.RequestUpdateLeagueSeaso
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
+import vn.ptit.project.epl_web.dto.response.topscorer.ResponseTopGoalScorerDTO;
 import vn.ptit.project.epl_web.service.LeagueSeasonService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/league-seasons")
@@ -73,5 +77,30 @@ public class LeagueSeasonController {
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/{id}/top-goal-scorers")
+    @ApiMessage("Fetch top goal scorers for a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopGoalScorers(@PathVariable Long id) {
+        ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopGoalScorers(id);
+        return ResponseEntity.ok(topGoalScorers);
+    }
+
+    @GetMapping("/{id}/top-assists")
+    @ApiMessage("Fetch top assists for a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopAssists(@PathVariable Long id) {
+        ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopAssists(id);
+        return ResponseEntity.ok(topGoalScorers);
+    }
+    @GetMapping("/{id}/top-yellow-cards")
+    @ApiMessage("Fetch top yellow cards for a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopYellowCards(@PathVariable Long id) {
+        ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopYellowCards(id);
+        return ResponseEntity.ok(topGoalScorers);
+    }
+    @GetMapping("/{id}/top-red-cards")
+    @ApiMessage("Fetch top red cards for a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopRedCards(@PathVariable Long id) {
+        ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopRedCards(id);
+        return ResponseEntity.ok(topGoalScorers);
+    }
     
 }

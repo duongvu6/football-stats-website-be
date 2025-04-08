@@ -68,7 +68,7 @@ public class MatchActionService {
         return matchActionRepository.findById(id).get();
     }
     public ResultPaginationDTO fetchAllMatchActions(Specification<MatchAction> spec, Pageable pageable) {
-        Page<MatchAction> matchActionPage = this.matchActionRepository.findAll(pageable);
+        Page<MatchAction> matchActionPage = this.matchActionRepository.findAll(spec, pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);

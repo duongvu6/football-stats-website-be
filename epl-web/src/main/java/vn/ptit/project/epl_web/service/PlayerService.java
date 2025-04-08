@@ -36,7 +36,12 @@ public class PlayerService {
         this.transferHistoryService = transferHistoryService;
     }
 
-
+    public List<ResponsePlayerDTO> getSquadByClubAndSeason(Long clubId, Long seasonId) {
+        List<Player> players = playerRepository.findSquadByClubAndSeason(clubId, seasonId);
+        return players.stream()
+                .map(this::playerToResponsePlayerDTO)
+                .collect(Collectors.toList());
+    }
     public Player handleCreatePlayer(Player player) {
         return this.playerRepository.save(player);
     }
@@ -79,23 +84,33 @@ public class PlayerService {
     public ResponsePlayerDTO playerToResponsePlayerDTO(Player player) {
         ResponsePlayerDTO playerDTO = this.mapper.map(player, ResponsePlayerDTO.class);
         playerDTO.setTransferHistories(this.mapTransferHistoryFromPlayer(player));
+        if (playerDTO.getTransferHistories().isEmpty()) {
+            playerDTO.setCurrentClub("No club");
+        } else {
+            playerDTO.setCurrentClub(playerDTO.getTransferHistories().get(0).getClub());
+        }
         playerDTO.setAge(AgeUtil.calculateAge(player.getDob()));
         return playerDTO;
     }
     public List<ResponseCreateTransferHistoryDTO> mapTransferHistoryFromPlayer(Player player) {
-        List<TransferHistory> transferHistoryList = player.getTransferHistories();
-        List<ResponseCreateTransferHistoryDTO> transferHistories = new ArrayList<>();
-        for (TransferHistory th : transferHistoryList) {
-            ResponseCreateTransferHistoryDTO newThDTO = this.transferHistoryService.transferHistoryToResponseCreateTransferHistoryDTO(th);
-            transferHistories.add(newThDTO);
+        List<TransferHistory> sortedTransferHistories = player.getTransferHistories().stream()
+                .sorted(Comparator.comparing(TransferHistory::getDate).reversed())
+                .toList();
+        List<ResponseCreateTransferHistoryDTO> transferHistoriesDTOs = sortedTransferHistories.stream()
+                .map(this.transferHistoryService::transferHistoryToResponseCreateTransferHistoryDTO)
+                .toList();
+        if (!transferHistoriesDTOs.isEmpty()) {
+            transferHistoriesDTOs.get(transferHistoriesDTOs.size() - 1).setPreviousClub("-");
+            for (int i = transferHistoriesDTOs.size() - 2; i >= 0; i--) {
+                transferHistoriesDTOs.get(i).setPreviousClub(transferHistoriesDTOs.get(i + 1).getClub());
+            }
         }
-        return transferHistories;
+        return transferHistoriesDTOs;
     }
     public void handleDeletePlayer(Long id) throws InvalidRequestException {
         Optional<Player> player = this.playerRepository.findById(id);
         if (player.isPresent()) {
             Player deletedPlayer = player.get();
-            //TODO delete all club related
             for (TransferHistory th : deletedPlayer.getTransferHistories()) {
                 this.transferHistoryService.handleDeleteTransferHistory(th.getId());
             }

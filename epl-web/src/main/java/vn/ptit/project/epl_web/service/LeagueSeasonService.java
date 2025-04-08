@@ -16,6 +16,7 @@ import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.LeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
+import vn.ptit.project.epl_web.dto.response.topscorer.ResponseTopGoalScorerDTO;
 import vn.ptit.project.epl_web.repository.LeagueSeasonRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
@@ -91,5 +92,18 @@ public class LeagueSeasonService {
     }
     public void deleteLeagueSeason(Long leagueSeasonId ) throws InvalidRequestException {
        this.leagueSeasonRepository.deleteById(leagueSeasonId);
+    }
+    public ArrayList<ResponseTopGoalScorerDTO> getTopGoalScorers(Long seasonId) {
+        return new ArrayList<>(leagueSeasonRepository.findTopGoalScorersBySeason(seasonId));
+
+    }
+    public ArrayList<ResponseTopGoalScorerDTO> getTopAssists(Long seasonId) {
+        return new ArrayList<>(leagueSeasonRepository.findTopAssistsBySeason(seasonId));
+    }
+    public ArrayList<ResponseTopGoalScorerDTO> getTopYellowCards(Long seasonId) {
+        return new ArrayList<>(leagueSeasonRepository.findTopYellowCardsBySeason(seasonId));
+    }
+    public ArrayList<ResponseTopGoalScorerDTO> getTopRedCards(Long seasonId) {
+        return new ArrayList<>(leagueSeasonRepository.findTopRedCardsBySeason(seasonId));
     }
 }
