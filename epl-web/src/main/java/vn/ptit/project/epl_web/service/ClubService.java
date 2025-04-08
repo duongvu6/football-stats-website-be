@@ -129,32 +129,4 @@ public class ClubService {
         }
 
     }
-    public boolean playFor(Player player, Club club,LeagueSeason season)
-    {
-        List<TransferHistory> transferHistories = player.getTransferHistories();
-        List<TransferHistory> filteredSortedHistories = transferHistories.stream()
-                .filter(th -> !th.getDate().isBefore(season.getStartDate()) && !th.getDate().isAfter(season.getEndDate()))
-                .sorted((th1, th2) -> th2.getDate().compareTo(th1.getDate())) // Sắp xếp giảm dần
-                .toList();
-
-
-
-    }
-    public List<PlayerDTO> findPlayersByClub(Club club,LeagueSeason season)
-    {
-        List<TransferHistory> transferHistories = club.getTransferHistories();
-        List<PlayerDTO> currentPlayerList = new ArrayList<>();
-        for(TransferHistory th: transferHistories)
-        {
-            if(th.getType().equals("Permanent")||th.getType().equals("Free Transfer")||th.getType().equals("Loan")||th.getType().equals("Youth Promote"))
-            {
-                Player player =th.getPlayer();
-                if(playFor(player,club,season)&&!transferHistories.contains(th))
-                {
-                    currentPlayerList.add(modelMapper.map(player, PlayerDTO.class));
-                }
-            }
-        }
-        return currentPlayerList;
-    }
 }
