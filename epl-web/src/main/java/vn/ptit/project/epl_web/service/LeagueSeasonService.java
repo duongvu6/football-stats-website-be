@@ -17,6 +17,7 @@ import vn.ptit.project.epl_web.dto.response.leagueseason.LeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseCreateLeagueSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.leagueseason.ResponseUpdateLeaguesSeasonDTO;
 import vn.ptit.project.epl_web.dto.response.topscorer.ResponseTopGoalScorerDTO;
+import vn.ptit.project.epl_web.repository.ClubRepository;
 import vn.ptit.project.epl_web.repository.LeagueSeasonRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
@@ -30,11 +31,13 @@ public class LeagueSeasonService {
    private final ModelMapper modelMapper;
    private final LeagueService leagueService;
    private final ClubSeasonTableService clubSeasonTableService;
-   public LeagueSeasonService(LeagueSeasonRepository leagueSeasonRepository, ModelMapper modelMapper, LeagueService leagueService, ClubSeasonTableService clubSeasonTableService) {
+   private final ClubRepository clubRepository;
+   public LeagueSeasonService(LeagueSeasonRepository leagueSeasonRepository, ModelMapper modelMapper, LeagueService leagueService, ClubSeasonTableService clubSeasonTableService, ClubRepository clubRepository) {
         this.leagueSeasonRepository = leagueSeasonRepository;
         this.modelMapper = modelMapper;
        this.leagueService = leagueService;
        this.clubSeasonTableService = clubSeasonTableService;
+       this.clubRepository = clubRepository;
    }
    public LeagueSeason findByLeagueSeasonId(Long leagueSeasonId) {
        return leagueSeasonRepository.findById(leagueSeasonId).orElse(null);
@@ -105,5 +108,12 @@ public class LeagueSeasonService {
     }
     public ArrayList<ResponseTopGoalScorerDTO> getTopRedCards(Long seasonId) {
         return new ArrayList<>(leagueSeasonRepository.findTopRedCardsBySeason(seasonId));
+    }
+    public List<LeagueSeasonDTO> getLeagueSeasonsByClubId(Long clubId) {
+        List<LeagueSeason> seasons = this.clubRepository.findLeagueSeasonsByClubId(clubId);
+
+        return seasons.stream()
+                .map(this::leagueSeasonToLeagueSeasonDTO)
+                .collect(Collectors.toList());
     }
 }
