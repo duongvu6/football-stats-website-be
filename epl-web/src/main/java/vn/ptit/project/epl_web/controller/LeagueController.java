@@ -12,6 +12,7 @@ import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.dto.request.league.RequestCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.request.league.RequestUpdateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.ResultPaginationDTO;
+import vn.ptit.project.epl_web.dto.response.club.ClubWinDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseCreateLeagueDTO;
 import vn.ptit.project.epl_web.dto.response.league.ResponseUpdateLeagueDTO;
 import vn.ptit.project.epl_web.service.LeagueService;
@@ -19,6 +20,8 @@ import vn.ptit.project.epl_web.util.annotation.ApiMessage;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/leagues")
@@ -70,5 +73,12 @@ public class LeagueController {
             }
             this.leagueService.deleteLeague(leagueId);
             return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/{id}/top-clubs-win")
+    @ApiMessage("get top clubs that win the league most")
+    public ResponseEntity<List<ClubWinDTO>> getTopClubWins(@PathVariable("id") Long leagueId) throws InvalidRequestException {
+        List<ClubWinDTO> clubWinDTOS=leagueService.clubTables(leagueId);
+        return ResponseEntity.ok(clubWinDTOS);
     }
 }

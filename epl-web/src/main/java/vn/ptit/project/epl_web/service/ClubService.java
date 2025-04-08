@@ -129,4 +129,17 @@ public class ClubService {
         }
 
     }
+//    public int numWinSeason (Long clubId)
+//    {
+//        Club club=clubRepository.findById(clubId).get();
+//        int count = 0;
+//        for(ClubSeasonTable cst:club.getClubSeasonTables())
+//        {
+//            if(cst.getRanked()==1)
+//            {
+//                count++;
+//            }
+//        }
+//        return count;
+//    }
 }
