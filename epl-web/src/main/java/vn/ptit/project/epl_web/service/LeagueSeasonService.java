@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.ptit.project.epl_web.domain.Club;
 import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.domain.League;
 import vn.ptit.project.epl_web.domain.LeagueSeason;
@@ -115,5 +116,36 @@ public class LeagueSeasonService {
         return seasons.stream()
                 .map(this::leagueSeasonToLeagueSeasonDTO)
                 .collect(Collectors.toList());
+    }
+    public ArrayList<ResponseTopGoalScorerDTO> getTopGoalScorersByClub(Long seasonId, Long clubId) throws InvalidRequestException {
+        // Get the club name for filtering
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new InvalidRequestException("Club with id = " + clubId + " not found"));
+        String clubName = club.getName();
+
+        // Get all top scorers for the season and filter by club
+        List<ResponseTopGoalScorerDTO> allScorers = leagueSeasonRepository.findTopGoalScorersBySeason(seasonId);
+
+        List<ResponseTopGoalScorerDTO> filteredScorers = allScorers.stream()
+                .filter(scorer -> clubName.equals(scorer.getCurrentClub()))
+                .toList();
+
+        return new ArrayList<>(filteredScorers);
+    }
+
+    public ArrayList<ResponseTopGoalScorerDTO> getTopAssistsByClub(Long seasonId, Long clubId) throws InvalidRequestException {
+        // Get the club name for filtering
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new InvalidRequestException("Club with id = " + clubId + " not found"));
+        String clubName = club.getName();
+
+        // Get all top assists for the season and filter by club
+        List<ResponseTopGoalScorerDTO> allAssists = leagueSeasonRepository.findTopAssistsBySeason(seasonId);
+
+        List<ResponseTopGoalScorerDTO> filteredAssists = allAssists.stream()
+                .filter(assister -> clubName.equals(assister.getCurrentClub()))
+                .toList();
+
+        return new ArrayList<>(filteredAssists);
     }
 }

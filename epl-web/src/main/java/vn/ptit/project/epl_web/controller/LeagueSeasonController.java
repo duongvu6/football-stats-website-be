@@ -102,5 +102,22 @@ public class LeagueSeasonController {
         ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopRedCards(id);
         return ResponseEntity.ok(topGoalScorers);
     }
+    @GetMapping("/{seasonId}/clubs/{clubId}/top-goal-scorers")
+    @ApiMessage("Fetch top goal scorers for a specific club in a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopGoalScorersByClub(
+            @PathVariable Long seasonId,
+            @PathVariable Long clubId) throws InvalidRequestException {
+        ArrayList<ResponseTopGoalScorerDTO> topGoalScorers = leagueSeasonService.getTopGoalScorersByClub(seasonId, clubId);
+        return ResponseEntity.ok(topGoalScorers);
+    }
+
+    @GetMapping("/{seasonId}/clubs/{clubId}/top-assists")
+    @ApiMessage("Fetch top assists for a specific club in a league season")
+    public ResponseEntity<ArrayList<ResponseTopGoalScorerDTO>> getTopAssistsByClub(
+            @PathVariable Long seasonId,
+            @PathVariable Long clubId) throws InvalidRequestException {
+        ArrayList<ResponseTopGoalScorerDTO> topAssists = leagueSeasonService.getTopAssistsByClub(seasonId, clubId);
+        return ResponseEntity.ok(topAssists);
+    }
     
 }
