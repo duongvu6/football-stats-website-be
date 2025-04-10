@@ -66,6 +66,6 @@ public class MatchController {
             throw new InvalidRequestException("Match with id = " + id + " not found.");
         }
         this.matchService.deleteMatchById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.ok(null);
     }
 }

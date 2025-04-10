@@ -28,12 +28,14 @@ public class MatchService {
     private final LeagueSeasonService leagueSeasonService;
     private final ClubService clubService;
     private final MatchActionService matchActionService;
-    public MatchService(MatchRepository matchRepository, ModelMapper modelMapper, LeagueSeasonService leagueSeasonService, ClubService clubService, MatchActionService matchActionService) {
+    private final ClubSeasonTableService clubSeasonTableService;
+    public MatchService(MatchRepository matchRepository, ModelMapper modelMapper, LeagueSeasonService leagueSeasonService, ClubService clubService, MatchActionService matchActionService, ClubSeasonTableService clubSeasonTableService) {
         this.matchRepository = matchRepository;
         this.modelMapper = modelMapper;
         this.leagueSeasonService = leagueSeasonService;
         this.clubService = clubService;
         this.matchActionService = matchActionService;
+        this.clubSeasonTableService = clubSeasonTableService;
     }
 
     public Match requestCreateMatchDTOtoMatch(RequestCreateMatchDTO requestCreateMatchDTO) {
@@ -43,8 +45,9 @@ public class MatchService {
         match.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateMatchDTO.getSeason()));
         return match;
     }
-    public Match handleCreateMatch(Match match) {
-        return matchRepository.save(match);
+    public void handleCreateMatch(Match match) {
+        matchRepository.save(match);
+        this.updateLeagueTableOnMatch(match);
     }
     public ResponseCreateMatchDTO matchToResponseCreateMatchDTO(Match match) {
         ResponseCreateMatchDTO responseCreateMatchDTO = modelMapper.map(match, ResponseCreateMatchDTO.class);
@@ -64,6 +67,7 @@ public class MatchService {
         match.setAway(away.get());
         match.setHost(host.get());
         match.setSeason(leagueSeason);
+        this.updateLeagueTableOnMatch(match);
         return matchRepository.save(match);
     }
     public ResponseUpdateMatchDTO matchToResponseUpdateMatchDTO(Match match) {
@@ -95,7 +99,59 @@ public class MatchService {
         return result;
     }
     public void deleteMatchById(Long id) {
-        matchRepository.deleteById(id);
+        Match match = matchRepository.findById(id).orElse(null);
+        if (match != null) {
+            // Delete all associated match actions first
+            if (match.getMatchActions() != null && !match.getMatchActions().isEmpty()) {
+                for (MatchAction action : match.getMatchActions()) {
+                    matchActionService.deleteMatchActionById(action.getId());
+                }
+            }
+            // Now it's safe to delete the match
+            matchRepository.deleteById(id);
+        }
+    }
+
+    private void updateLeagueTableOnMatch(Match match) {
+        LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(match.getSeason().getId());
+        if (leagueSeason != null) {
+            Club host = match.getHost();
+            Club away = match.getAway();
+            ArrayList<ClubSeasonTable> clubSeasonTables = new ArrayList<>(leagueSeason.getClubSeasonTables());
+            for (ClubSeasonTable cst : clubSeasonTables) {
+                if (cst.getClub().getName().equals(host.getName())) {
+                    if (match.getHostScore() > match.getAwayScore()) {
+                        cst.setNumWins(cst.getNumWins() + 1);
+                        cst.setPoints(cst.getPoints() + 3);
+                    } else if (match.getHostScore() == match.getAwayScore()) {
+                        cst.setNumDraws(cst.getNumDraws() + 1);
+                        cst.setPoints(cst.getPoints() + 1);
+                    } else {
+                        cst.setNumLosses(cst.getNumLosses() + 1);
+                    }
+                    cst.setGoalScores(cst.getGoalScores() + match.getHostScore());
+                    cst.setGoalConceded(cst.getGoalConceded() + match.getAwayScore());
+                    cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                    this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+                } else if (cst.getClub().getName().equals(away.getName())) {
+                    if (match.getAwayScore()> match.getHostScore()) {
+                        cst.setNumWins(cst.getNumWins() + 1);
+                        cst.setPoints(cst.getPoints() + 3);
+                    } else if (match.getHostScore() == match.getAwayScore()) {
+                        cst.setNumDraws(cst.getNumDraws() + 1);
+                        cst.setPoints(cst.getPoints() + 1);
+                    } else {
+                        cst.setNumLosses(cst.getNumLosses() + 1);
+                    }
+                    cst.setGoalScores(cst.getGoalScores() + match.getAwayScore());
+                    cst.setGoalConceded(cst.getGoalConceded() + match.getHostScore());
+                    cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                    this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+                }
+            }
+
+        }
+
     }
 
 }

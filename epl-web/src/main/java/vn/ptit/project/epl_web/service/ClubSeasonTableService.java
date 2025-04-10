@@ -51,6 +51,9 @@ public class ClubSeasonTableService {
         clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(dto.getSeason()));
         return clubSeasonTableRepository.save(clubSeasonTable);
     }
+    public void handleUpdateClubSeasonTable(ClubSeasonTable clubSeasonTable){
+        clubSeasonTableRepository.save(clubSeasonTable);
+    }
     public Optional<ClubSeasonTable> getClubSeasonTableById(Long id) {
         return this.clubSeasonTableRepository.findById(id);
     }
