@@ -47,7 +47,7 @@ public class MatchService {
     }
     public void handleCreateMatch(Match match) {
         matchRepository.save(match);
-        this.updateLeagueTableOnMatch(match);
+        this.updateLeagueTableOnCreatingMatch(match);
     }
     public ResponseCreateMatchDTO matchToResponseCreateMatchDTO(Match match) {
         ResponseCreateMatchDTO responseCreateMatchDTO = modelMapper.map(match, ResponseCreateMatchDTO.class);
@@ -107,6 +107,8 @@ public class MatchService {
                     matchActionService.deleteMatchActionById(action.getId());
                 }
             }
+            LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(match.getSeason().getId());
+            this.revertMatchStatsFromTable(match, leagueSeason);
             // Now it's safe to delete the match
             matchRepository.deleteById(id);
         }
@@ -115,43 +117,105 @@ public class MatchService {
     private void updateLeagueTableOnMatch(Match match) {
         LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(match.getSeason().getId());
         if (leagueSeason != null) {
-            Club host = match.getHost();
-            Club away = match.getAway();
-            ArrayList<ClubSeasonTable> clubSeasonTables = new ArrayList<>(leagueSeason.getClubSeasonTables());
-            for (ClubSeasonTable cst : clubSeasonTables) {
-                if (cst.getClub().getName().equals(host.getName())) {
-                    if (match.getHostScore() > match.getAwayScore()) {
-                        cst.setNumWins(cst.getNumWins() + 1);
-                        cst.setPoints(cst.getPoints() + 3);
-                    } else if (match.getHostScore() == match.getAwayScore()) {
-                        cst.setNumDraws(cst.getNumDraws() + 1);
-                        cst.setPoints(cst.getPoints() + 1);
-                    } else {
-                        cst.setNumLosses(cst.getNumLosses() + 1);
-                    }
-                    cst.setGoalScores(cst.getGoalScores() + match.getHostScore());
-                    cst.setGoalConceded(cst.getGoalConceded() + match.getAwayScore());
-                    cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
-                    this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
-                } else if (cst.getClub().getName().equals(away.getName())) {
-                    if (match.getAwayScore()> match.getHostScore()) {
-                        cst.setNumWins(cst.getNumWins() + 1);
-                        cst.setPoints(cst.getPoints() + 3);
-                    } else if (match.getHostScore() == match.getAwayScore()) {
-                        cst.setNumDraws(cst.getNumDraws() + 1);
-                        cst.setPoints(cst.getPoints() + 1);
-                    } else {
-                        cst.setNumLosses(cst.getNumLosses() + 1);
-                    }
-                    cst.setGoalScores(cst.getGoalScores() + match.getAwayScore());
-                    cst.setGoalConceded(cst.getGoalConceded() + match.getHostScore());
-                    cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
-                    this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+            if (match.getId() != null) {
+                Match originalMatch = matchRepository.findById(match.getId()).orElse(null);
+                if (originalMatch != null) {
+                    // Revert the previous match statistics
+                    revertMatchStatsFromTable(originalMatch, leagueSeason);
                 }
             }
-
+            applyNewLeagueSeasonOnMatch(leagueSeason, match);
         }
-
+    }
+    private void updateLeagueTableOnCreatingMatch(Match match) {
+        LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(match.getSeason().getId());
+        if (leagueSeason != null) {
+            applyNewLeagueSeasonOnMatch(leagueSeason, match);
+        }
+    }
+    private void applyNewLeagueSeasonOnMatch(LeagueSeason leagueSeason, Match match) {
+        Club host = match.getHost();
+        Club away = match.getAway();
+        ArrayList<ClubSeasonTable> clubSeasonTables = new ArrayList<>(leagueSeason.getClubSeasonTables());
+        for (ClubSeasonTable cst : clubSeasonTables) {
+            // Update home team stats
+            if (cst.getClub().getName().equals(host.getName())) {
+                if (match.getHostScore() > match.getAwayScore()) {
+                    cst.setNumWins(cst.getNumWins() + 1);
+                    cst.setPoints(cst.getPoints() + 3);
+                } else if (match.getHostScore() == match.getAwayScore()) {
+                    cst.setNumDraws(cst.getNumDraws() + 1);
+                    cst.setPoints(cst.getPoints() + 1);
+                } else {
+                    cst.setNumLosses(cst.getNumLosses() + 1);
+                }
+                cst.setGoalScores(cst.getGoalScores() + match.getHostScore());
+                cst.setGoalConceded(cst.getGoalConceded() + match.getAwayScore());
+                cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+            }
+            // Update away team stats
+            else if (cst.getClub().getName().equals(away.getName())) {
+                if (match.getAwayScore() > match.getHostScore()) {
+                    cst.setNumWins(cst.getNumWins() + 1);
+                    cst.setPoints(cst.getPoints() + 3);
+                } else if (match.getHostScore() == match.getAwayScore()) {
+                    cst.setNumDraws(cst.getNumDraws() + 1);
+                    cst.setPoints(cst.getPoints() + 1);
+                } else {
+                    cst.setNumLosses(cst.getNumLosses() + 1);
+                }
+                cst.setGoalScores(cst.getGoalScores() + match.getAwayScore());
+                cst.setGoalConceded(cst.getGoalConceded() + match.getHostScore());
+                cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+            }
+        }
     }
 
+    /**
+     * Revert the statistics of a match from club season table
+     * @param match The match to revert
+     * @param leagueSeason The league season containing club tables
+     */
+    private void revertMatchStatsFromTable(Match match, LeagueSeason leagueSeason) {
+        Club host = match.getHost();
+        Club away = match.getAway();
+        ArrayList<ClubSeasonTable> clubSeasonTables = new ArrayList<>(leagueSeason.getClubSeasonTables());
+        
+        for (ClubSeasonTable cst : clubSeasonTables) {
+            // Revert home team stats
+            if (cst.getClub().getName().equals(host.getName())) {
+                if (match.getHostScore() > match.getAwayScore()) {
+                    cst.setNumWins(cst.getNumWins() - 1);
+                    cst.setPoints(cst.getPoints() - 3);
+                } else if (match.getHostScore() == match.getAwayScore()) {
+                    cst.setNumDraws(cst.getNumDraws() - 1);
+                    cst.setPoints(cst.getPoints() - 1);
+                } else {
+                    cst.setNumLosses(cst.getNumLosses() - 1);
+                }
+                cst.setGoalScores(cst.getGoalScores() - match.getHostScore());
+                cst.setGoalConceded(cst.getGoalConceded() - match.getAwayScore());
+                cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+            } 
+            // Revert away team stats
+            else if (cst.getClub().getName().equals(away.getName())) {
+                if (match.getAwayScore() > match.getHostScore()) {
+                    cst.setNumWins(cst.getNumWins() - 1);
+                    cst.setPoints(cst.getPoints() - 3);
+                } else if (match.getHostScore() == match.getAwayScore()) {
+                    cst.setNumDraws(cst.getNumDraws() - 1);
+                    cst.setPoints(cst.getPoints() - 1);
+                } else {
+                    cst.setNumLosses(cst.getNumLosses() - 1);
+                }
+                cst.setGoalScores(cst.getGoalScores() - match.getAwayScore());
+                cst.setGoalConceded(cst.getGoalConceded() - match.getHostScore());
+                cst.setDiff(cst.getGoalScores() - cst.getGoalConceded());
+                this.clubSeasonTableService.handleUpdateClubSeasonTable(cst);
+            }
+        }
+    }
 }
