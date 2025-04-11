@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @Setter
 public class RequestCreateClubSeasonTableDTO {
     @NotNull
-    private int points,ranked,numWins,numLosses,numDraws,goalScores,goalConceded,diff;
+    private int points,numWins,numLosses,numDraws,goalScores,goalConceded,diff;
     @NotNull
     private Long season,club;
 

@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
-import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateCstDTO;
+import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.service.ClubSeasonTableService;
 import vn.ptit.project.epl_web.util.annotation.ApiMessage;
@@ -26,7 +26,7 @@ public class ClubSeasonTableController {
     @PostMapping("")
     @ApiMessage("Create a club season table")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateClubSeasonTableDTO> creatClubSeasonTable(@Valid @RequestBody RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO)
+    public ResponseEntity<ResponseCreateClubSeasonTableDTO> createClubSeasonTable(@Valid @RequestBody RequestCreateClubSeasonTableDTO requestCreateClubSeasonTableDTO)
     {
         ClubSeasonTable clubSeasonTable=clubSeasonTableService.requestCreateClubSeasonTableDTOtoClubSeasonTable(requestCreateClubSeasonTableDTO);
         clubSeasonTableService.handleCreateClubSeasonTable( clubSeasonTable );
@@ -35,7 +35,7 @@ public class ClubSeasonTableController {
     @PutMapping("")
     @ApiMessage("Update a club season table")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseCreateClubSeasonTableDTO> updateClubSeasonTable(@Valid @RequestBody RequestUpdateCstDTO updateCstDTO){
+    public ResponseEntity<ResponseCreateClubSeasonTableDTO> updateClubSeasonTable(@Valid @RequestBody RequestUpdateClubSeasonTableDTO updateCstDTO){
         ClubSeasonTable clubSeasonTable=clubSeasonTableService.handleUpdateClubSeasonTable(updateCstDTO);
         return ResponseEntity.ok().body(clubSeasonTableService.clubSeasonTabletoResponseCreateClubSeasonTableDTO(clubSeasonTable));
     }

@@ -119,5 +119,20 @@ public class LeagueSeasonController {
         ArrayList<ResponseTopGoalScorerDTO> topAssists = leagueSeasonService.getTopAssistsByClub(seasonId, clubId);
         return ResponseEntity.ok(topAssists);
     }
-    
+
+    @PutMapping("/{seasonId}/update-rankings")
+    @ApiMessage("Update rankings in the league table")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseUpdateLeaguesSeasonDTO> updateLeagueTableRankings(@PathVariable Long seasonId) throws InvalidRequestException {
+        LeagueSeason leagueSeason = leagueSeasonService.findByLeagueSeasonId(seasonId);
+        if (leagueSeason == null) {
+            throw new InvalidRequestException("Season with id = " + seasonId + " not found.");
+        }
+        
+        // Update the rankings
+        leagueSeasonService.updateLeagueTableRankings(seasonId);
+        
+        // Return the updated league season
+        return ResponseEntity.ok(this.leagueSeasonService.seasontoDTO(leagueSeason));
+    }
 }

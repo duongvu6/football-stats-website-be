@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import vn.ptit.project.epl_web.domain.ClubSeasonTable;
 import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestCreateClubSeasonTableDTO;
-import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateCstDTO;
+import vn.ptit.project.epl_web.dto.request.clubseasontable.RequestUpdateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ResponseCreateClubSeasonTableDTO;
 import vn.ptit.project.epl_web.dto.response.clubseasontable.ClubSeasonTablesDTO;
 import vn.ptit.project.epl_web.repository.ClubSeasonTableRepository;
@@ -36,8 +36,10 @@ public class ClubSeasonTableService {
         clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(requestCreateClubSeasonTableDTO.getSeason()));
         return clubSeasonTable;
     }
-    public ClubSeasonTable handleCreateClubSeasonTable(ClubSeasonTable clubSeasonTable){
-        return clubSeasonTableRepository.save(clubSeasonTable);
+    public void handleCreateClubSeasonTable(ClubSeasonTable clubSeasonTable){
+        clubSeasonTable.setRanked(0);
+        ClubSeasonTable res = clubSeasonTableRepository.save(clubSeasonTable);
+        this.leagueSeasonService.updateLeagueTableRankings(res.getSeason().getId());
     }
     public ResponseCreateClubSeasonTableDTO clubSeasonTabletoResponseCreateClubSeasonTableDTO(ClubSeasonTable clubSeasonTable){
         ResponseCreateClubSeasonTableDTO responseCreateClubSeasonTableDTO=modelMapper.map(clubSeasonTable, ResponseCreateClubSeasonTableDTO.class);
@@ -45,11 +47,14 @@ public class ClubSeasonTableService {
         responseCreateClubSeasonTableDTO.setSeason(clubSeasonTable.getSeason().getId());
         return responseCreateClubSeasonTableDTO;
     }
-    public ClubSeasonTable handleUpdateClubSeasonTable(RequestUpdateCstDTO dto){
+    public ClubSeasonTable handleUpdateClubSeasonTable(RequestUpdateClubSeasonTableDTO dto){
         ClubSeasonTable clubSeasonTable=modelMapper.map(dto, ClubSeasonTable.class);
         clubSeasonTable.setClub(clubService.getClubById(dto.getClub()).get());
         clubSeasonTable.setSeason(leagueSeasonService.findByLeagueSeasonId(dto.getSeason()));
-        return clubSeasonTableRepository.save(clubSeasonTable);
+        clubSeasonTable.setRanked(0);
+        ClubSeasonTable res =  clubSeasonTableRepository.save(clubSeasonTable);
+        this.leagueSeasonService.updateLeagueTableRankings(res.getSeason().getId());
+        return this.getClubSeasonTableById(res.getId()).get();
     }
     public void handleUpdateClubSeasonTable(ClubSeasonTable clubSeasonTable){
         clubSeasonTableRepository.save(clubSeasonTable);

@@ -148,4 +148,53 @@ public class LeagueSeasonService {
 
         return new ArrayList<>(filteredAssists);
     }
+
+    /**
+     * Updates the rankings in a league season table based on sorting criteria:
+     * 1. Points (descending)
+     * 2. Goal difference (descending)
+     * 3. Goals scored (descending)
+     * 4. Club name (ascending)
+     *
+     * @param seasonId ID of the league season to update rankings for
+     */
+    public void updateLeagueTableRankings(Long seasonId) {
+        LeagueSeason leagueSeason = findByLeagueSeasonId(seasonId);
+        if (leagueSeason == null || leagueSeason.getClubSeasonTables() == null) {
+            return;
+        }
+        
+        List<ClubSeasonTable> tables = new ArrayList<>(leagueSeason.getClubSeasonTables());
+        
+        // Sort tables by points (desc), then goal diff (desc), then goals scored (desc), then club name (asc)
+        tables.sort((table1, table2) -> {
+            // First compare points (descending)
+            int comparison = Integer.compare(table2.getPoints(), table1.getPoints());
+            if (comparison != 0) {
+                return comparison;
+            }
+            
+            // If points are equal, compare goal difference (descending)
+            comparison = Integer.compare(table2.getDiff(), table1.getDiff());
+            if (comparison != 0) {
+                return comparison;
+            }
+            
+            // If goal difference is equal, compare goals scored (descending)
+            comparison = Integer.compare(table2.getGoalScores(), table1.getGoalScores());
+            if (comparison != 0) {
+                return comparison;
+            }
+            
+            // If goals scored are equal, compare club names (ascending)
+            return table1.getClub().getName().compareTo(table2.getClub().getName());
+        });
+        
+        // Update the ranks
+        for (int i = 0; i < tables.size(); i++) {
+            ClubSeasonTable table = tables.get(i);
+            table.setRanked(i + 1); // Ranks start from 1
+            clubSeasonTableService.handleUpdateClubSeasonTable(table);
+        }
+    }
 }

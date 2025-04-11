@@ -48,6 +48,7 @@ public class MatchService {
     public void handleCreateMatch(Match match) {
         matchRepository.save(match);
         this.updateLeagueTableOnCreatingMatch(match);
+        this.leagueSeasonService.updateLeagueTableRankings(match.getSeason().getId());
     }
     public ResponseCreateMatchDTO matchToResponseCreateMatchDTO(Match match) {
         ResponseCreateMatchDTO responseCreateMatchDTO = modelMapper.map(match, ResponseCreateMatchDTO.class);
@@ -68,7 +69,13 @@ public class MatchService {
         match.setHost(host.get());
         match.setSeason(leagueSeason);
         this.updateLeagueTableOnMatch(match);
-        return matchRepository.save(match);
+        
+        Match updatedMatch = matchRepository.save(match);
+        
+        // Update rankings after table changes
+        this.leagueSeasonService.updateLeagueTableRankings(updatedMatch.getSeason().getId());
+        
+        return updatedMatch;
     }
     public ResponseUpdateMatchDTO matchToResponseUpdateMatchDTO(Match match) {
         ResponseUpdateMatchDTO responseUpdateMatchDTO = modelMapper.map(match, ResponseUpdateMatchDTO.class);
@@ -101,16 +108,26 @@ public class MatchService {
     public void deleteMatchById(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
         if (match != null) {
+            Long seasonId = match.getSeason().getId();
+            
             // Delete all associated match actions first
             if (match.getMatchActions() != null && !match.getMatchActions().isEmpty()) {
                 for (MatchAction action : match.getMatchActions()) {
                     matchActionService.deleteMatchActionById(action.getId());
                 }
             }
-            LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(match.getSeason().getId());
-            this.revertMatchStatsFromTable(match, leagueSeason);
+            
+            // Revert match stats from league table
+            LeagueSeason leagueSeason = this.leagueSeasonService.findByLeagueSeasonId(seasonId);
+            if (leagueSeason != null) {
+                revertMatchStatsFromTable(match, leagueSeason);
+            }
+            
             // Now it's safe to delete the match
             matchRepository.deleteById(id);
+            
+            // Update rankings after table changes
+            this.leagueSeasonService.updateLeagueTableRankings(seasonId);
         }
     }
 
