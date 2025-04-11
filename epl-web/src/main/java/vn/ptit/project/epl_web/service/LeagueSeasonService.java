@@ -23,6 +23,7 @@ import vn.ptit.project.epl_web.repository.LeagueSeasonRepository;
 import vn.ptit.project.epl_web.util.exception.InvalidRequestException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,8 @@ public class LeagueSeasonService {
        for(ClubSeasonTable cs:leagueSeason.getClubSeasonTables()){
            dtoList.add(this.clubSeasonTableService.tableToClubSeasonTableDTO(cs));
        }
+       // Sort the club season tables by rank in ascending order
+       dtoList.sort(Comparator.comparingInt(ClubSeasonTablesDTO::getRanked));
        dto.setClubSeasonTables(dtoList);
        return dto;
    }
