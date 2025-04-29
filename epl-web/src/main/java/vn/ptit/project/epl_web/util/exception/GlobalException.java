@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import vn.ptit.project.epl_web.dto.response.RestResponse;
+import vn.ptit.project.epl_web.util.error.StorageException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,5 +82,18 @@ public class GlobalException {
         response.setMessage("Bad credentials");
         response.setError(exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(value = {
+
+            StorageException.class })
+    public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
+
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(ex.getMessage());
+        // res.setMessage("IdInvalidException");
+        res.setMessage("Exception upload file...");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }
