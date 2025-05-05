@@ -10,4 +10,5 @@ public class ResponseCreateClubDTO {
     private String name;
     private String country;
     private String stadiumName;
+    private String imageUrl;
 }

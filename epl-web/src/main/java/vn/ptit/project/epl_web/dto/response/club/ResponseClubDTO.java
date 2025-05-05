@@ -13,10 +13,8 @@ public class ResponseClubDTO {
     private String name;
     private String country;
     private String stadiumName;
-
-//    private List<CoachClub> coachClubs;
-//    private List<ClubSeasonTable> clubSeasonTables;
     private List<ResponseCreateTransferHistoryDTO> transferHistories;
     private CoachDTO currentCoach;
     private List<PlayerDTO> currentPlayerList;
+    private String imageUrl;
 }

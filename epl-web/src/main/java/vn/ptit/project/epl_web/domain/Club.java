@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 
@@ -23,5 +22,5 @@ public class Club {
     private List<ClubSeasonTable> clubSeasonTables;
     @OneToMany(mappedBy = "club")
     private List<TransferHistory> transferHistories;
-
+    private String imageUrl;
 }

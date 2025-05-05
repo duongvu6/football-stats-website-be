@@ -13,6 +13,5 @@ public class RequestUpdateClubDTO {
     @NotBlank(message = "Country must not be null")
     private String country;
     private String stadiumName;
-
-    //TODO add details
+    private String imageUrl;
 }

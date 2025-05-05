@@ -7,18 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 public class RequestCreatePlayerDTO {
     @NotBlank(message = "Name must not be blank")
     private String name;
-//    @Positive(message = "Age must be positive number")
-//    @NotNull(message = "Age must not be blank")
-//    private int age;
     @NotNull(message = "Date of birth must not be blank")
     private LocalDate dob;
     @NotNull(message = "Shirt number must not be blank")
@@ -30,4 +25,5 @@ public class RequestCreatePlayerDTO {
     private List<String> citizenships;
     @NotNull(message = "Positions must not be null")
     private List<String> positions;
+    private String imageUrl;
 }

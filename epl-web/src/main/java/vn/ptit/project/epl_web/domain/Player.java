@@ -2,15 +2,11 @@ package vn.ptit.project.epl_web.domain;
 
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "players")
@@ -21,7 +17,6 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-//    private int age;
     private LocalDate dob;
     private int shirtNumber;
     private double marketValue;
@@ -35,11 +30,10 @@ public class Player {
     private List<String> positions;
     @OneToMany(mappedBy = "player")
     private List<TransferHistory> transferHistories;
-
-//    private Club currentClub;
-
     @Transactional
     public List<TransferHistory> getTransferHistories() {
         return transferHistories;
     }
+
+    private String imageUrl;
 }

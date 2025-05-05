@@ -20,4 +20,5 @@ public class ResponsePlayerDTO {
     private List<String> citizenships;
     private List<String> positions;
     private List<ResponseCreateTransferHistoryDTO> transferHistories;
+    private String imageUrl;
 }

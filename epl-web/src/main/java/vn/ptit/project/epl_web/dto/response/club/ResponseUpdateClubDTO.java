@@ -10,5 +10,5 @@ public class ResponseUpdateClubDTO {
     private String name;
     private String country;
     private String stadiumName;
-    //TODO add detail
+    private String imageUrl;
 }

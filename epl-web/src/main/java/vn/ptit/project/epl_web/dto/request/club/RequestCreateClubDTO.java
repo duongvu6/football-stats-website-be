@@ -12,4 +12,5 @@ public class RequestCreateClubDTO {
     @NotBlank(message = "Country must not be null")
     private String country;
     private String stadiumName;
+    private String imageUrl;
 }
