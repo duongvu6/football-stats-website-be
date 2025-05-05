@@ -17,6 +17,6 @@ public class User {
     private String name;
     private String password;
     private String role;
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "VARCHAR(MAX)")
     private String refreshtoken;
 }
