@@ -9,5 +9,5 @@ import lombok.Setter;
 public class RequestCreateLeagueDTO {
     @NotBlank(message = "Name must be not blank")
     private String name;
-
+    private String imageUrl;
 }

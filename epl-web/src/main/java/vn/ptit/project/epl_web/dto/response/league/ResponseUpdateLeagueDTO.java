@@ -12,4 +12,5 @@ public class ResponseUpdateLeagueDTO {
     private Long id;
     private String name;
     private List<LeagueSeasonDTO> leagueSeasons;
+    private String imageUrl;
 }

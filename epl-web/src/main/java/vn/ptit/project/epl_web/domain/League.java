@@ -20,6 +20,6 @@ public class League {
     private String name;
     @OneToMany(mappedBy = "league",cascade = CascadeType.ALL)
     private List<LeagueSeason> leagueSeasons;
-
+    private String imageUrl;
 
 }

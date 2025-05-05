@@ -11,4 +11,5 @@ import java.util.List;
 public class RequestUpdateLeagueDTO {
     private Long id;
     private String name;
+    private String imageUrl;
 }
