@@ -22,4 +22,6 @@ public class HeadCoach {
     @OneToMany(mappedBy = "headCoach",cascade = CascadeType.ALL)
     private List<CoachClub> coachClubs;
 
+    private String imageUrl;
+
 }

@@ -15,4 +15,5 @@ public class ResponseCreateCoachDTO {
     private int age;
     private LocalDate dob;
     private List<String> citizenships;
+    private String imageUrl;
 }

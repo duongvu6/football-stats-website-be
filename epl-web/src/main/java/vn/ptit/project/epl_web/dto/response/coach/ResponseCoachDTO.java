@@ -18,4 +18,5 @@ public class ResponseCoachDTO {
     private List<String> citizenships;
     public List<ResponseCoachClubDTO> coachClubs;
     private ClubDTO currentClub;
+    private String imageUrl;
 }

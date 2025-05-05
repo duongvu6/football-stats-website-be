@@ -19,4 +19,5 @@ public class RequestCreateCoachDTO {
     private LocalDate dob;
     @NotNull(message = "Citizenship must not be null")
     private Set<String> citizenships;
+    private String imageUrl;
 }
